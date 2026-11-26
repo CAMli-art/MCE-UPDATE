@@ -1,8 +1,9 @@
 {
-  "version": "5.1.1",
-  "commit": "a245b83f09ba94945635a6bdecebab4d1318b11d",
+  "commit": "f3c088ce8a6ed9bd493f2c9da00259acf950781e",
+  "notes": "Windows compilation and basic self-test passed; automatic update",
+  "version": "5.2.0",
   "files": {
-    "channel.json": "dd46b56c18c0acb5ca253d74312f3600818f2b67f00b9cc515c150095fe4f36d"
-  },
-  "notes": "Configuration-only update; no executable published."
+    "channel.json": "bcece5817cf8a49fac6ae2a16e928f4bd1f57d3f14b78b8defdc5795737c403a",
+    "MCE.Client.exe": "36395ad55df3acd3cc0f0ff3c32f2b4603e4a74d2013a585afffb8af596f46d7"
+  }
 }
