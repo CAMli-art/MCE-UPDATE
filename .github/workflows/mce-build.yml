@@ -2,7 +2,7 @@ name: MCE Windows build and auto publish
 on:
   push:
     branches: [main]
-    paths: ['publish-v5.json']
+    paths: ['publish-v5.json', '.github/workflows/mce-build.yml', 'build-tools/**']
   workflow_dispatch:
 permissions:
   contents: write
@@ -28,7 +28,8 @@ jobs:
           New-Item -ItemType Directory -Force build/source | Out-Null
           if ($request.source_mode -eq 'archive') {
             $sourceVersion = if ($request.source_version) { [string]$request.source_version } else { $v }
-            if ($sourceVersion -notmatch '^5\.[0-9]+\.[0-9]+
+            if ($sourceVersion -notmatch '^5\.[0-9]+\.[0-9]+$') { throw 'Invalid source version' }
+            $count = [int]$request.parts
             if ($count -lt 1 -or $count -gt 256) { throw 'Invalid archive part count' }
             $b64 = (1..$count | ForEach-Object { (Get-Content ("src/v5/$sourceVersion/part{0:D2}.b64" -f $_) -Raw).Trim() }) -join ''
             [IO.File]::WriteAllBytes((Join-Path (Get-Location).Path 'build/source.zip'), [Convert]::FromBase64String($b64))
@@ -43,59 +44,9 @@ jobs:
           $csc = "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
           if (!(Test-Path $csc)) { $csc = "$env:WINDIR\Microsoft.NET\Framework\v4.0.30319\csc.exe" }
           if (!(Test-Path $csc)) { throw 'Missing Windows C# compiler' }
-          & $csc /nologo /target:winexe /optimize+ /codepage:65001 /out:build/MCE.Client.exe /r:System.dll /r:System.Core.dll /r:System.Drawing.dll /r:System.Windows.Forms.dll /r:System.Web.Extensions.dll /r:System.Security.dll @src
-          if ($LASTEXITCODE -ne 0) { throw 'Compilation failed' }
-          $proc = Start-Process -FilePath (Resolve-Path build/MCE.Client.exe) -ArgumentList '--self-test' -PassThru
-          if (!$proc.WaitForExit(12000)) { $proc.Kill(); throw 'Smoke test timeout' }
-          if ($proc.ExitCode -ne 0) { throw 'Smoke test failed' }
-          @{version=$v;sync_seconds=60} | ConvertTo-Json -Compress | Set-Content build/channel.json -Encoding utf8NoBOM
-          "MCE_VERSION=$v" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-      - uses: actions/upload-artifact@v4
-        with:
-          name: mce-v5-build
-          path: |
-            build/MCE.Client.exe
-            build/channel.json
-      - name: Publish verified binary and manifest
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          git config user.name 'MCE build bot'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
-          Copy-Item build/MCE.Client.exe v5/MCE.Client.exe -Force
-          Copy-Item build/channel.json v5/channel.json -Force
-          Copy-Item build/source/MCE.cs src/v5/MCE.cs -Force
-          Copy-Item build/source/Backend.cs src/v5/Backend.cs -Force
-          git add -- v5/MCE.Client.exe v5/channel.json src/v5/MCE.cs src/v5/Backend.cs
-          git commit -m "Build MCE $env:MCE_VERSION"
-          if ($LASTEXITCODE -ne 0) { throw 'Binary commit failed' }
-          $commit = (git rev-parse HEAD).Trim()
-          $files = @{}
-          foreach ($name in @('MCE.Client.exe','channel.json')) {
-            $files[$name] = (Get-FileHash "v5/$name" -Algorithm SHA256).Hash.ToLowerInvariant()
-          }
-          @{version=$env:MCE_VERSION;commit=$commit;files=$files;notes='Windows compilation and basic self-test passed; automatic update'} | ConvertTo-Json -Depth 5 | Set-Content latest-v5.json -Encoding utf8NoBOM
-          git add -- latest-v5.json
-          git commit -m "Publish MCE $env:MCE_VERSION"
-          if ($LASTEXITCODE -ne 0) { throw 'Manifest commit failed' }
-          git push origin HEAD:main
-          if ($LASTEXITCODE -ne 0) { throw 'Publish failed; no forced push' }
-) { throw 'Invalid source version' }
-            $count = [int]$request.parts
-            if ($count -lt 1 -or $count -gt 256) { throw 'Invalid archive part count' }
-            $b64 = (1..$count | ForEach-Object { (Get-Content ("src/v5/$v/part{0:D2}.b64" -f $_) -Raw).Trim() }) -join ''
-            [IO.File]::WriteAllBytes((Join-Path (Get-Location).Path 'build/source.zip'), [Convert]::FromBase64String($b64))
-            if ((Get-FileHash build/source.zip -Algorithm SHA256).Hash.ToLowerInvariant() -ne [string]$request.sha256) { throw 'Source archive SHA256 mismatch' }
-            Expand-Archive -LiteralPath build/source.zip -DestinationPath build/source -Force
-          } elseif ($request.source_mode -eq 'files') {
-            Copy-Item src/v5/MCE.cs,src/v5/Backend.cs build/source/
-          } else { throw 'Unknown source mode' }
-          $src = @('build/source/MCE.cs','build/source/Backend.cs')
-          foreach ($p in $src) { if (!(Test-Path $p)) { throw "Missing source: $p" } }
-          $csc = "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
-          if (!(Test-Path $csc)) { $csc = "$env:WINDIR\Microsoft.NET\Framework\v4.0.30319\csc.exe" }
-          if (!(Test-Path $csc)) { throw 'Missing Windows C# compiler' }
-          & $csc /nologo /target:winexe /optimize+ /codepage:65001 /out:build/MCE.Client.exe /r:System.dll /r:System.Core.dll /r:System.Drawing.dll /r:System.Windows.Forms.dll /r:System.Web.Extensions.dll /r:System.Security.dll @src
+          $src = @($src | ForEach-Object { (Resolve-Path -LiteralPath $_).Path })
+          $output = Join-Path (Get-Location).Path 'build\MCE.Client.exe'
+          & $csc /nologo /target:winexe /optimize+ /codepage:65001 "/out:$output" /r:System.dll /r:System.Core.dll /r:System.Drawing.dll /r:System.Windows.Forms.dll /r:System.Web.Extensions.dll /r:System.Security.dll @src
           if ($LASTEXITCODE -ne 0) { throw 'Compilation failed' }
           $proc = Start-Process -FilePath (Resolve-Path build/MCE.Client.exe) -ArgumentList '--self-test' -PassThru
           if (!$proc.WaitForExit(12000)) { $proc.Kill(); throw 'Smoke test timeout' }
