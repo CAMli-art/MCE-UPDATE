@@ -1,0 +1,73 @@
+name: MCE Windows build and update
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version (5.x.y)'
+        required: true
+        default: '5.1.3'
+      publish:
+        description: 'Publish after successful build and smoke test'
+        type: boolean
+        default: false
+permissions:
+  contents: write
+concurrency:
+  group: mce-v5-publish
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Validate and compile
+        shell: pwsh
+        env:
+          MCE_VERSION: ${{ inputs.version }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if ($env:MCE_VERSION -notmatch '^5\.[0-9]+\.[0-9]+$') { throw 'Invalid version' }
+          $current = Get-Content latest-v5.json -Raw | ConvertFrom-Json
+          if ([version]$env:MCE_VERSION -le [version]$current.version) { throw 'Version must increase' }
+          $src = @('src/v5/MCE.cs','src/v5/Backend.cs')
+          foreach ($p in $src) { if (!(Test-Path $p)) { throw "Missing reviewed source: $p" } }
+          $csc = "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
+          if (!(Test-Path $csc)) { throw 'Missing .NET Framework compiler' }
+          New-Item -ItemType Directory -Force build | Out-Null
+          & $csc /nologo /target:winexe /optimize+ /codepage:65001 /out:build/MCE.Client.exe /r:System.dll /r:System.Core.dll /r:System.Drawing.dll /r:System.Windows.Forms.dll /r:System.Web.Extensions.dll /r:System.Security.dll @src
+          if ($LASTEXITCODE -ne 0) { throw 'Compilation failed' }
+          $proc = Start-Process -FilePath (Resolve-Path build/MCE.Client.exe) -ArgumentList '--self-test' -PassThru
+          if (!$proc.WaitForExit(12000)) { $proc.Kill(); throw 'Smoke test timeout' }
+          if ($proc.ExitCode -ne 0) { throw 'Smoke test failed' }
+          @{version=$env:MCE_VERSION;sync_seconds=60} | ConvertTo-Json -Compress | Set-Content build/channel.json -Encoding utf8NoBOM
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mce-v5-build
+          path: build/
+      - name: Publish verified binary and manifest
+        if: inputs.publish
+        shell: pwsh
+        env:
+          MCE_VERSION: ${{ inputs.version }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          git config user.name 'MCE build bot'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          Copy-Item build/MCE.Client.exe v5/MCE.Client.exe -Force
+          Copy-Item build/channel.json v5/channel.json -Force
+          git add -- v5/MCE.Client.exe v5/channel.json
+          git commit -m "Build MCE $env:MCE_VERSION"
+          if ($LASTEXITCODE -ne 0) { throw 'Binary commit failed' }
+          $commit = (git rev-parse HEAD).Trim()
+          $files = @{}
+          foreach ($name in @('MCE.Client.exe','channel.json')) {
+            $files[$name] = (Get-FileHash "v5/$name" -Algorithm SHA256).Hash.ToLowerInvariant()
+          }
+          @{version=$env:MCE_VERSION;commit=$commit;files=$files;notes='Windows compile and startup smoke test passed'} | ConvertTo-Json -Depth 5 | Set-Content latest-v5.json -Encoding utf8NoBOM
+          git add -- latest-v5.json
+          git commit -m "Publish MCE $env:MCE_VERSION"
+          if ($LASTEXITCODE -ne 0) { throw 'Manifest commit failed' }
+          git push origin HEAD:main
+          if ($LASTEXITCODE -ne 0) { throw 'Publish failed; no forced push' }
