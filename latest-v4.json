@@ -1,0 +1,8 @@
+{
+  "version": "4.1.1",
+  "commit": "bab22a378b8b3c1a75724b06710a283434a78d4c",
+  "files": {
+    "mce_release.json": "902bcde11997f8a81c0edd8b256270713a01f355c2eca07da37e4380ff54dcda"
+  },
+  "notes": "Cấu hình đồng bộ Google Sheets mỗi 60 giây cho client V4.1 đã cài bộ khởi động mới."
+}
