@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: a2dfa305f92313896181ee63da50ccfb17dbd129
+          ref: f9403da650dab13ca0e92e427eca5287394178d8
       - name: Run actual WinForms UI with demo data
         shell: powershell
         run: |
@@ -62,5 +62,5 @@ jobs:
           $form.Close()
       - uses: actions/upload-artifact@v4
         with:
-          name: mce-v551-actual-ui
+          name: mce-v552-actual-ui
           path: preview/*.png
