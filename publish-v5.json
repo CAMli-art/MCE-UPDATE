@@ -1,5 +1,5 @@
 {
-  "version": "5.5.2",
+  "version": "5.5.3",
   "source_mode": "files",
-  "notes": "Compact reference-inspired material card, reliable selected-row details, search placeholder and Google image search by name/spec/brand. No automatic photo assignment."
+  "notes": "Initial reference photo mapping for 42 material codes using real product photo URLs; manual images override reference photos."
 }

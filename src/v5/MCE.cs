@@ -26,7 +26,7 @@ static class App {
 }
 class Login:Form {
  public string User; TextBox u=new TextBox(),p=new TextBox();
- public Login(){Text="MCE Workspace V5.5.2 | Đăng nhập";StartPosition=FormStartPosition.CenterScreen;ClientSize=new Size(440,375);FormBorderStyle=FormBorderStyle.FixedDialog;MaximizeBox=false;Font=new Font("Segoe UI",10);BackColor=Color.White;Controls.Add(new Label{Text="MCE  |  QUẢN LÝ KHO",ForeColor=Color.White,BackColor=Color.FromArgb(23,46,73),Dock=DockStyle.Top,Height=76,TextAlign=ContentAlignment.MiddleCenter,Font=new Font("Segoe UI",17,FontStyle.Bold)});var online=new Button{Text="Đăng nhập Google - dữ liệu thật",Left=35,Top=96,Width=370,Height=44,BackColor=Color.FromArgb(22,117,209),ForeColor=Color.White,FlatStyle=FlatStyle.Flat};online.Click+=(s,e)=>{User="Google";DialogResult=DialogResult.OK;};Controls.Add(online);Controls.Add(new Label{Text="Chế độ DEMO (không truy cập kho thật)",Left=35,Top=155,Width=370,Height=28});u.SetBounds(35,184,370,30);u.Text="xem";p.SetBounds(35,224,370,30);p.UseSystemPasswordChar=true;var demo=new Button{Text="Vào bản thử nghiệm",Left=35,Top=268,Width=370,Height=40};demo.Click+=(s,e)=>{string name=u.Text.Trim().ToLowerInvariant();if(new[]{"admin","kho","kythuat","xem"}.Contains(name)&&p.Text=="123123"){User=name;DialogResult=DialogResult.OK;}else MessageBox.Show("Sai tài khoản hoặc mật khẩu thử nghiệm.");};Controls.AddRange(new Control[]{u,p,demo,new Label{Text="Quyền ghi thật do Google và quản trị viên cấp.",Left=35,Top=324,Width=370,Height=30}});AcceptButton=online;}
+ public Login(){Text="MCE Workspace V5.5.3 | Đăng nhập";StartPosition=FormStartPosition.CenterScreen;ClientSize=new Size(440,375);FormBorderStyle=FormBorderStyle.FixedDialog;MaximizeBox=false;Font=new Font("Segoe UI",10);BackColor=Color.White;Controls.Add(new Label{Text="MCE  |  QUẢN LÝ KHO",ForeColor=Color.White,BackColor=Color.FromArgb(23,46,73),Dock=DockStyle.Top,Height=76,TextAlign=ContentAlignment.MiddleCenter,Font=new Font("Segoe UI",17,FontStyle.Bold)});var online=new Button{Text="Đăng nhập Google - dữ liệu thật",Left=35,Top=96,Width=370,Height=44,BackColor=Color.FromArgb(22,117,209),ForeColor=Color.White,FlatStyle=FlatStyle.Flat};online.Click+=(s,e)=>{User="Google";DialogResult=DialogResult.OK;};Controls.Add(online);Controls.Add(new Label{Text="Chế độ DEMO (không truy cập kho thật)",Left=35,Top=155,Width=370,Height=28});u.SetBounds(35,184,370,30);u.Text="xem";p.SetBounds(35,224,370,30);p.UseSystemPasswordChar=true;var demo=new Button{Text="Vào bản thử nghiệm",Left=35,Top=268,Width=370,Height=40};demo.Click+=(s,e)=>{string name=u.Text.Trim().ToLowerInvariant();if(new[]{"admin","kho","kythuat","xem"}.Contains(name)&&p.Text=="123123"){User=name;DialogResult=DialogResult.OK;}else MessageBox.Show("Sai tài khoản hoặc mật khẩu thử nghiệm.");};Controls.AddRange(new Control[]{u,p,demo,new Label{Text="Quyền ghi thật do Google và quản trị viên cấp.",Left=35,Top=324,Width=370,Height=30}});AcceptButton=online;}
 }
 class Google {
  const string Scope="https://www.googleapis.com/auth/spreadsheets.readonly openid email";
@@ -74,7 +74,7 @@ class MainForm:Form {
  workspaceKpi[2].Text=stock.Count(r=>r.Length>=12&&new[]{"CẦN NHẬP","HẾT HÀNG"}.Contains(r[11])).ToString("N0");
  workspaceKpi[3].Text=stock.Count(r=>r.Length>=12&&new[]{"ÂM KHO","TRÙNG MÃ","CẦN ĐỐI SOÁT"}.Contains(r[11])).ToString("N0");
  foreach(var entry in workspaceFilters){entry.Key.Enabled=!history;entry.Key.BackColor=entry.Value==workspaceFilter&&!history?Color.FromArgb(213,230,252):Color.White;}
- if(workspaceAccount!=null)workspaceAccount.Text=(liveAlias==""?"Chỉ đọc":liveAlias+" / "+liveRole)+"    |    V5.5.2";
+ if(workspaceAccount!=null)workspaceAccount.Text=(liveAlias==""?"Chỉ đọc":liveAlias+" / "+liveRole)+"    |    V5.5.3";
  }
 
  class SoftCard:Panel {
@@ -83,7 +83,7 @@ class MainForm:Form {
  }
  Button CleanButton(string text,Action action){var b=Btn(text,action);b.FlatStyle=FlatStyle.Flat;b.FlatAppearance.BorderSize=0;b.FlatAppearance.MouseOverBackColor=Color.FromArgb(229,239,252);b.BackColor=Color.White;b.Font=new Font("Segoe UI",10);b.Cursor=Cursors.Hand;return b;}
  void ModernLayout(){
- Text="MCE WORKSPACE | V5.5.2";BackColor=Color.White;
+ Text="MCE WORKSPACE | V5.5.3";BackColor=Color.White;
  var side=Controls.OfType<FlowLayoutPanel>().First();
  var content=Controls.OfType<TableLayoutPanel>().First();
  var buttons=side.Controls.OfType<Button>().ToArray();
@@ -144,6 +144,62 @@ class MainForm:Form {
  string PhotoPath(string code){
  using(var hash=SHA256.Create()){return Path.Combine(App.Home,"material-images",BitConverter.ToString(hash.ComputeHash(Encoding.UTF8.GetBytes(code.Trim().ToUpperInvariant()))).Replace("-","")+".jpg");}
  }
+ static readonly Dictionary<string,string> referencePhotos=new Dictionary<string,string>(StringComparer.OrdinalIgnoreCase){{"MCE-0012","https://5.imimg.com/data5/SELLER/Default/2023/11/363094628/WV/AB/MU/138096213/pneumatic-brass-cylinder-500x500.jpg"},
+{"MCE-0013","https://5.imimg.com/data5/SELLER/Default/2023/11/363094628/WV/AB/MU/138096213/pneumatic-brass-cylinder-500x500.jpg"},
+{"MCE-0014","https://5.imimg.com/data5/SELLER/Default/2023/11/363094628/WV/AB/MU/138096213/pneumatic-brass-cylinder-500x500.jpg"},
+{"MCE-0016","https://i5.walmartimages.com/seo/Air-Hose-Pneumatic-Flow-Speed-Control-Valve-6mm-to-6mm-Push-in-Quick-Fitting_a5c535ca-3e98-4c2f-9a51-65da70270ccd.f77ddedae61754d51e381b36f8d74f3a.jpeg"},
+{"MCE-0661","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0662","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0727","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0731","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0726","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0729","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0728","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0725","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0732","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0730","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0734","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0733","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0453","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0452","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0451","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0709","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0706","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0708","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0722","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0721","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0720","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0712","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0711","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0724","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0718","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0723","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0713","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0719","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0716","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0715","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0446","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0447","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0448","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0449","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0714","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0450","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0707","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
+{"MCE-0710","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"}};
+ readonly HashSet<string> pendingPhotos=new HashSet<string>();
+ async void LoadReferencePhoto(string code){
+ string url;if(!referencePhotos.TryGetValue(code,out url)||!pendingPhotos.Add(code))return;
+ try{
+ string path=PhotoPath(code)+".reference.jpg";
+ if(!File.Exists(path)){
+ byte[] data=await System.Threading.Tasks.Task.Run(()=>{using(var wc=new TimedClient()){return wc.DownloadData(url);}});
+ if(data.Length>10*1024*1024)throw new Exception("Image too large");
+ Directory.CreateDirectory(Path.GetDirectoryName(path));
+ using(var stream=new MemoryStream(data))using(var img=Image.FromStream(stream))using(var bmp=new Bitmap(img)){bmp.Save(path,System.Drawing.Imaging.ImageFormat.Jpeg);}
+ }
+ if(!IsDisposed&&photoKey==code&&!File.Exists(PhotoPath(code))){using(var stream=File.OpenRead(path))using(var img=Image.FromStream(stream)){var old=materialPhoto.Image;materialPhoto.Image=new Bitmap(img);if(old!=null)old.Dispose();}photoLabel.Text="Ảnh tham khảo";}
+ }catch{if(!IsDisposed&&photoKey==code&&!File.Exists(PhotoPath(code)))photoLabel.Text="Chưa tải được ảnh";}finally{pendingPhotos.Remove(code);}
+ }
  void RefreshMaterialPhoto(string code){
  if(materialPhoto==null)return;
  photoChoose.Enabled=!IsDemo&&(liveRole=="admin"||liveRole=="kho")&&code!="";
@@ -152,7 +208,7 @@ class MainForm:Form {
  var old=materialPhoto.Image;materialPhoto.Image=null;if(old!=null)old.Dispose();
  photoLabel.Text=code==""?"Chọn vật tư":"Chưa có ảnh";
  if(code=="")return;
- try{string path=PhotoPath(code);if(File.Exists(path)){using(var stream=File.OpenRead(path))using(var image=Image.FromStream(stream)){materialPhoto.Image=new Bitmap(image);}photoLabel.Text=code;}}catch{photoLabel.Text="Không đọc được ảnh";}
+ try{string path=PhotoPath(code);if(File.Exists(path)){using(var stream=File.OpenRead(path))using(var image=Image.FromStream(stream)){materialPhoto.Image=new Bitmap(image);}photoLabel.Text=code;}else LoadReferencePhoto(code);}catch{photoLabel.Text="Không đọc được ảnh";}
  }
  void ChooseMaterialPhoto(){
  if(IsDemo||(liveRole!="admin"&&liveRole!="kho")||photoKey=="")return;
