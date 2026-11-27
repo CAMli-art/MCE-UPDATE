@@ -1,5 +1,5 @@
 {
-  "version": "5.4.3",
+  "version": "5.5.0",
   "source_mode": "files",
-  "notes": "Material photo preview and local image selection by MCE code; refresh details after sorting; existing data/backend unchanged."
+  "notes": "Workspace visual redesign: navy header, compact sidebar, live KPI cards, actual stock status filters, existing photo/details and ChatGPT Plus handoff. No inferred location data."
 }
