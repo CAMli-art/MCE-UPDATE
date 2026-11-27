@@ -1,0 +1,36 @@
+name: MCE employee installer
+on:
+  push:
+    branches: [main]
+    paths: ['src/setup/**','.github/workflows/mce-setup.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  setup:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and verify employee installer
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $manifest = Get-Content latest-v5.json -Raw | ConvertFrom-Json
+          New-Item -ItemType Directory -Force setup-out,setup-build | Out-Null
+          foreach ($n in @('MCE.Client.exe','channel.json')) {
+            $url = "https://raw.githubusercontent.com/CAMli-art/MCE-UPDATE/$($manifest.commit)/v5/$n"
+            Invoke-WebRequest $url -OutFile "setup-build/$n"
+            if ((Get-FileHash "setup-build/$n" -Algorithm SHA256).Hash.ToLowerInvariant() -ne $manifest.files.$n) { throw "SHA256 mismatch $n" }
+          }
+          $csc = "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe"
+          & $csc /nologo /target:winexe /optimize+ /codepage:65001 /out:setup-build/MCE.exe /r:System.dll /r:System.Core.dll /r:System.Windows.Forms.dll /r:System.Web.Extensions.dll src/setup/Updater.cs
+          if ($LASTEXITCODE -ne 0) { throw 'Launcher compile failed' }
+          & $csc /nologo /target:winexe /optimize+ /codepage:65001 /out:setup-out/MCE-Setup-Admin.exe /r:System.dll /r:System.Core.dll /r:System.Windows.Forms.dll /r:System.Web.Extensions.dll /resource:setup-build/MCE.exe,MCE.exe /resource:setup-build/MCE.Client.exe,MCE.Client.exe /resource:setup-build/channel.json,channel.json src/setup/Setup.cs
+          if ($LASTEXITCODE -ne 0) { throw 'Setup compile failed' }
+          $p = Start-Process setup-out/MCE-Setup-Admin.exe -ArgumentList '--self-test' -PassThru -Wait
+          if ($p.ExitCode -ne 0) { throw 'Setup self-test failed' }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MCE-Setup-Admin
+          path: setup-out/MCE-Setup-Admin.exe
