@@ -25,31 +25,34 @@ jobs:
           $exe = (Resolve-Path v5/MCE.Client.exe).Path
           $asm = [Reflection.Assembly]::LoadFrom($exe)
           $type = $asm.GetType('MainForm', $true)
-          $form = [Activator]::CreateInstance($type, [object[]]@('admin'))
+          $form = $type.GetConstructor([type[]]@([string])).Invoke([object[]]@('Demo'))
           $flags = [Reflection.BindingFlags]'Instance,NonPublic'
-          $stock = $type.GetField('stock',$flags).GetValue($form)
+          $stock = ,($type.GetField('stock',$flags).GetValue($form))
+          $stock = $stock[0]
           $stock.Clear()
-          $names = @('Nối nhanh – Ống Ø8','Nối nhanh – Ống Ø8','Nối nhanh – Ống Ø10','Nối nhanh – Ống Ø8','Nối nhanh – Ống Ø8','Nối nhanh – Ống Ø10')
+          $type.GetField('liveRole',$flags).SetValue($form,'admin')
+          $type.GetField('liveAlias',$flags).SetValue($form,'Demo')
+          $names = @('Material A','Material B','Material C','Material D','Material E','Material F')
           $qty = @(33,43,48,3,1,2)
           for($i=0;$i -lt $names.Count;$i++){
-            $stock.Add([string[]]@(('MCE-{0:D4}' -f ($i+1)),$names[$i],'Quy cách mẫu','VẬT TƯ KHÍ NÉN','NỐI KHÍ NHANH','Cái','',([string]$qty[$i]),'0','0',([string]$qty[$i]),'ĐỦ HÀNG'))
+            $stock.Add([string[]]@(('MCE-{0:D4}' -f ($i+1)),$names[$i],'Sample specification','Pneumatics','Fittings','pcs','',([string]$qty[$i]),'0','0',([string]$qty[$i]),([string]([char]0x0110)+[char]0x1ee6+' H'+[char]0x00c0+'NG')))
           }
           $form.WindowState = 'Normal'
           $form.StartPosition = 'Manual'
-          $form.Location = New-Object Drawing.Point(0,0)
-          $form.Size = New-Object Drawing.Size(1280,850)
+          $form.Location = [Drawing.Point]::new(0,0)
+          $form.Size = [Drawing.Size]::new(1280,850)
           $form.Show()
           $type.GetMethod('RefreshGroups',$flags).Invoke($form,@())
           $type.GetMethod('Render',$flags).Invoke($form,@())
           $form.Activate()
           1..8 | ForEach-Object { [Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 150 }
           New-Item -ItemType Directory -Force preview | Out-Null
-          $bmp = New-Object Drawing.Bitmap($form.Width,$form.Height)
-          $form.DrawToBitmap($bmp,(New-Object Drawing.Rectangle(0,0,$form.Width,$form.Height)))
+          $bmp = [Drawing.Bitmap]::new($form.Width,$form.Height)
+          $form.DrawToBitmap($bmp,([Drawing.Rectangle]::new(0,0,$form.Width,$form.Height)))
           $bmp.Save((Join-Path (Get-Location) 'preview/runtime-render.png'),[Drawing.Imaging.ImageFormat]::Png)
           $bmp.Dispose()
           try {
-            $screen = New-Object Drawing.Bitmap($form.Width,$form.Height)
+            $screen = [Drawing.Bitmap]::new($form.Width,$form.Height)
             $g = [Drawing.Graphics]::FromImage($screen)
             $g.CopyFromScreen($form.Location,[Drawing.Point]::Empty,$form.Size)
             $g.Dispose()
