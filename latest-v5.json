@@ -1,9 +1,9 @@
 {
-  "files": {
-    "channel.json": "749bf665f6e106620304b077f66d8a7951aa25f44f25bd02276145d0cbd5af86",
-    "MCE.Client.exe": "50e33d41a1bf0c305ecb6eaf4870ba9843908dea2bb8b2cc7ff782f2a15f4eff"
-  },
-  "commit": "19a40fcd315d5d6f1439d8a2fdda1db882acd69c",
+  "commit": "8ca6518d0e4e3d3be2a08bbcd4a6d6b2c70ba382",
   "notes": "Windows compilation and basic self-test passed; automatic update",
-  "version": "5.3.0"
+  "version": "5.4.0",
+  "files": {
+    "MCE.Client.exe": "98fbe41448dbb8f87fcee986837d4fac6998ee8de386dac3745b8a18076a55c2",
+    "channel.json": "790d363c1fa84315cf4dcdaca5e2482ac58916f744089c52debb22b0a735148c"
+  }
 }
