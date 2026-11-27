@@ -1,5 +1,5 @@
 {
-  "version": "5.4.2",
+  "version": "5.4.3",
   "source_mode": "files",
-  "notes": "Searchable material transaction dialog with technical specification, current stock, date picker (today only until server supports backdating), authenticated operator and project suggestions."
+  "notes": "Material photo preview and local image selection by MCE code; refresh details after sorting; existing data/backend unchanged."
 }
