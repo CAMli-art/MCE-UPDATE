@@ -1,5 +1,5 @@
 {
-  "version": "5.4.0",
+  "version": "5.4.1",
   "source_mode": "files",
-  "notes": "ChatGPT Plus browser shortcut and explicit selected-row clipboard handoff; no API, no automatic data transmission."
+  "notes": "Fix auto-update manifest hashing of committed Git bytes; no change to data or authentication."
 }

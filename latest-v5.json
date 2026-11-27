@@ -1,9 +1,9 @@
 {
   "commit": "8ca6518d0e4e3d3be2a08bbcd4a6d6b2c70ba382",
-  "notes": "Windows compilation and basic self-test passed; automatic update",
+  "notes": "Correct channel SHA256 for committed LF bytes; Windows compilation and basic self-test passed.",
   "version": "5.4.0",
   "files": {
     "MCE.Client.exe": "98fbe41448dbb8f87fcee986837d4fac6998ee8de386dac3745b8a18076a55c2",
-    "channel.json": "790d363c1fa84315cf4dcdaca5e2482ac58916f744089c52debb22b0a735148c"
+    "channel.json": "e6b84931a025b563fa3789eca0a5e1ff18102263eaff884f472ce2f1040e858d"
   }
 }

@@ -73,9 +73,14 @@ jobs:
           git commit -m "Build MCE $env:MCE_VERSION"
           if ($LASTEXITCODE -ne 0) { throw 'Binary commit failed' }
           $commit = (git rev-parse HEAD).Trim()
+          # Hash the committed Git bytes, not the Windows working tree.
+          $archive = Join-Path (Get-Location).Path 'build/published.zip'
+          git archive --format=zip "--output=$archive" $commit v5/MCE.Client.exe v5/channel.json
+          if ($LASTEXITCODE -ne 0) { throw 'Cannot archive committed payload' }
+          Expand-Archive -LiteralPath $archive -DestinationPath build/published -Force
           $files = @{}
           foreach ($name in @('MCE.Client.exe','channel.json')) {
-            $files[$name] = (Get-FileHash "v5/$name" -Algorithm SHA256).Hash.ToLowerInvariant()
+            $files[$name] = (Get-FileHash "build/published/v5/$name" -Algorithm SHA256).Hash.ToLowerInvariant()
           }
           @{version=$env:MCE_VERSION;commit=$commit;files=$files;notes='Windows compilation and basic self-test passed; automatic update'} | ConvertTo-Json -Depth 5 | Set-Content latest-v5.json -Encoding utf8NoBOM
           git add -- latest-v5.json
