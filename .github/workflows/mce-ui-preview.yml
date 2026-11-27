@@ -1,0 +1,63 @@
+name: MCE Windows UI screenshot
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/mce-ui-preview.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  screenshot:
+    runs-on: windows-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: a2dfa305f92313896181ee63da50ccfb17dbd129
+      - name: Run actual WinForms UI with demo data
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Add-Type -AssemblyName System.Windows.Forms
+          Add-Type -AssemblyName System.Drawing
+          [Windows.Forms.Application]::EnableVisualStyles()
+          [Windows.Forms.Application]::SetCompatibleTextRenderingDefault($false)
+          $exe = (Resolve-Path v5/MCE.Client.exe).Path
+          $asm = [Reflection.Assembly]::LoadFrom($exe)
+          $type = $asm.GetType('MainForm', $true)
+          $form = [Activator]::CreateInstance($type, [object[]]@('admin'))
+          $flags = [Reflection.BindingFlags]'Instance,NonPublic'
+          $stock = $type.GetField('stock',$flags).GetValue($form)
+          $stock.Clear()
+          $names = @('Nối nhanh – Ống Ø8','Nối nhanh – Ống Ø8','Nối nhanh – Ống Ø10','Nối nhanh – Ống Ø8','Nối nhanh – Ống Ø8','Nối nhanh – Ống Ø10')
+          $qty = @(33,43,48,3,1,2)
+          for($i=0;$i -lt $names.Count;$i++){
+            $stock.Add([string[]]@(('MCE-{0:D4}' -f ($i+1)),$names[$i],'Quy cách mẫu','VẬT TƯ KHÍ NÉN','NỐI KHÍ NHANH','Cái','',([string]$qty[$i]),'0','0',([string]$qty[$i]),'ĐỦ HÀNG'))
+          }
+          $form.WindowState = 'Normal'
+          $form.StartPosition = 'Manual'
+          $form.Location = New-Object Drawing.Point(0,0)
+          $form.Size = New-Object Drawing.Size(1280,850)
+          $form.Show()
+          $type.GetMethod('RefreshGroups',$flags).Invoke($form,@())
+          $type.GetMethod('Render',$flags).Invoke($form,@())
+          $form.Activate()
+          1..8 | ForEach-Object { [Windows.Forms.Application]::DoEvents(); Start-Sleep -Milliseconds 150 }
+          New-Item -ItemType Directory -Force preview | Out-Null
+          $bmp = New-Object Drawing.Bitmap($form.Width,$form.Height)
+          $form.DrawToBitmap($bmp,(New-Object Drawing.Rectangle(0,0,$form.Width,$form.Height)))
+          $bmp.Save((Join-Path (Get-Location) 'preview/runtime-render.png'),[Drawing.Imaging.ImageFormat]::Png)
+          $bmp.Dispose()
+          try {
+            $screen = New-Object Drawing.Bitmap($form.Width,$form.Height)
+            $g = [Drawing.Graphics]::FromImage($screen)
+            $g.CopyFromScreen($form.Location,[Drawing.Point]::Empty,$form.Size)
+            $g.Dispose()
+            $screen.Save((Join-Path (Get-Location) 'preview/screen-capture.png'),[Drawing.Imaging.ImageFormat]::Png)
+            $screen.Dispose()
+          } catch { Write-Warning $_ }
+          $form.Close()
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mce-v551-actual-ui
+          path: preview/*.png
