@@ -16,7 +16,16 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+      - name: Check release version
+        id: release
+        shell: pwsh
+        run: |
+          $request = Get-Content publish-v5.json -Raw | ConvertFrom-Json
+          $current = Get-Content latest-v5.json -Raw | ConvertFrom-Json
+          $needed = ([version]$request.version -gt [version]$current.version).ToString().ToLowerInvariant()
+          "needed=$needed" >> $env:GITHUB_OUTPUT
       - name: Validate release request and build C#
+        if: steps.release.outputs.needed == 'true'
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -54,12 +63,14 @@ jobs:
           @{version=$v;sync_seconds=60} | ConvertTo-Json -Compress | Set-Content build/channel.json -Encoding utf8NoBOM
           "MCE_VERSION=$v" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
       - uses: actions/upload-artifact@v4
+        if: steps.release.outputs.needed == 'true'
         with:
           name: mce-v5-build
           path: |
             build/MCE.Client.exe
             build/channel.json
       - name: Publish verified binary and manifest
+        if: steps.release.outputs.needed == 'true'
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
@@ -73,14 +84,12 @@ jobs:
           git commit -m "Build MCE $env:MCE_VERSION"
           if ($LASTEXITCODE -ne 0) { throw 'Binary commit failed' }
           $commit = (git rev-parse HEAD).Trim()
-          # Hash the committed Git bytes, not the Windows working tree.
-          $archive = Join-Path (Get-Location).Path 'build/published.zip'
-          git archive --format=zip "--output=$archive" $commit v5/MCE.Client.exe v5/channel.json
-          if ($LASTEXITCODE -ne 0) { throw 'Cannot archive committed payload' }
-          Expand-Archive -LiteralPath $archive -DestinationPath build/published -Force
+          # Read raw Git object bytes through Python, bypassing checkout and archive conversions.
           $files = @{}
           foreach ($name in @('MCE.Client.exe','channel.json')) {
-            $files[$name] = (Get-FileHash "build/published/v5/$name" -Algorithm SHA256).Hash.ToLowerInvariant()
+            $digest = python -c "import hashlib,subprocess,sys; b=subprocess.check_output(['git','cat-file','blob',sys.argv[1]]); print(hashlib.sha256(b).hexdigest())" "${commit}:v5/$name"
+            if ($LASTEXITCODE -ne 0 -or $digest -notmatch '^[0-9a-f]{64}$') { throw "Cannot hash committed blob: $name" }
+            $files[$name] = $digest.Trim()
           }
           @{version=$env:MCE_VERSION;commit=$commit;files=$files;notes='Windows compilation and basic self-test passed; automatic update'} | ConvertTo-Json -Depth 5 | Set-Content latest-v5.json -Encoding utf8NoBOM
           git add -- latest-v5.json

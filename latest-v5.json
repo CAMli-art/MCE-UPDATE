@@ -2,8 +2,8 @@
   "commit": "1f0dec92e9d9972a857c780ad2ab2ffed8f555e1",
   "version": "5.4.2",
   "files": {
-    "channel.json": "d1f9b846c897576cbd5182139df1d15cb0e7f87f062e9af5315301bb8bce7355",
+    "channel.json": "f2d9ecffd7901c56c2e6fee0ccb6757e87be9e9cb1c59b3263951c9b773ca3c5",
     "MCE.Client.exe": "697ed4d0f6c35845ac1e4288ba8c0c38a2224db023eaca4cf529ccab02d48d3e"
   },
-  "notes": "Windows compilation and basic self-test passed; automatic update"
+  "notes": "Windows compilation and basic self-test passed; channel checksum corrected against exact Git blob bytes"
 }
