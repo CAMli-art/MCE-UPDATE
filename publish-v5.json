@@ -1,5 +1,5 @@
 {
-  "version": "5.4.1",
+  "version": "5.4.2",
   "source_mode": "files",
-  "notes": "Fix auto-update manifest hashing of committed Git bytes; no change to data or authentication."
+  "notes": "Searchable material transaction dialog with technical specification, current stock, date picker (today only until server supports backdating), authenticated operator and project suggestions."
 }

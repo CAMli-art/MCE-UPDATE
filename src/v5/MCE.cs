@@ -26,7 +26,7 @@ static class App {
 }
 class Login:Form {
  public string User; TextBox u=new TextBox(),p=new TextBox();
- public Login(){Text="MCE Workspace V5.4.1 | Đăng nhập";StartPosition=FormStartPosition.CenterScreen;ClientSize=new Size(440,375);FormBorderStyle=FormBorderStyle.FixedDialog;MaximizeBox=false;Font=new Font("Segoe UI",10);BackColor=Color.White;Controls.Add(new Label{Text="MCE  |  QUẢN LÝ KHO",ForeColor=Color.White,BackColor=Color.FromArgb(23,46,73),Dock=DockStyle.Top,Height=76,TextAlign=ContentAlignment.MiddleCenter,Font=new Font("Segoe UI",17,FontStyle.Bold)});var online=new Button{Text="Đăng nhập Google - dữ liệu thật",Left=35,Top=96,Width=370,Height=44,BackColor=Color.FromArgb(22,117,209),ForeColor=Color.White,FlatStyle=FlatStyle.Flat};online.Click+=(s,e)=>{User="Google";DialogResult=DialogResult.OK;};Controls.Add(online);Controls.Add(new Label{Text="Chế độ DEMO (không truy cập kho thật)",Left=35,Top=155,Width=370,Height=28});u.SetBounds(35,184,370,30);u.Text="xem";p.SetBounds(35,224,370,30);p.UseSystemPasswordChar=true;var demo=new Button{Text="Vào bản thử nghiệm",Left=35,Top=268,Width=370,Height=40};demo.Click+=(s,e)=>{string name=u.Text.Trim().ToLowerInvariant();if(new[]{"admin","kho","kythuat","xem"}.Contains(name)&&p.Text=="123123"){User=name;DialogResult=DialogResult.OK;}else MessageBox.Show("Sai tài khoản hoặc mật khẩu thử nghiệm.");};Controls.AddRange(new Control[]{u,p,demo,new Label{Text="Quyền ghi thật do Google và quản trị viên cấp.",Left=35,Top=324,Width=370,Height=30}});AcceptButton=online;}
+ public Login(){Text="MCE Workspace V5.4.2 | Đăng nhập";StartPosition=FormStartPosition.CenterScreen;ClientSize=new Size(440,375);FormBorderStyle=FormBorderStyle.FixedDialog;MaximizeBox=false;Font=new Font("Segoe UI",10);BackColor=Color.White;Controls.Add(new Label{Text="MCE  |  QUẢN LÝ KHO",ForeColor=Color.White,BackColor=Color.FromArgb(23,46,73),Dock=DockStyle.Top,Height=76,TextAlign=ContentAlignment.MiddleCenter,Font=new Font("Segoe UI",17,FontStyle.Bold)});var online=new Button{Text="Đăng nhập Google - dữ liệu thật",Left=35,Top=96,Width=370,Height=44,BackColor=Color.FromArgb(22,117,209),ForeColor=Color.White,FlatStyle=FlatStyle.Flat};online.Click+=(s,e)=>{User="Google";DialogResult=DialogResult.OK;};Controls.Add(online);Controls.Add(new Label{Text="Chế độ DEMO (không truy cập kho thật)",Left=35,Top=155,Width=370,Height=28});u.SetBounds(35,184,370,30);u.Text="xem";p.SetBounds(35,224,370,30);p.UseSystemPasswordChar=true;var demo=new Button{Text="Vào bản thử nghiệm",Left=35,Top=268,Width=370,Height=40};demo.Click+=(s,e)=>{string name=u.Text.Trim().ToLowerInvariant();if(new[]{"admin","kho","kythuat","xem"}.Contains(name)&&p.Text=="123123"){User=name;DialogResult=DialogResult.OK;}else MessageBox.Show("Sai tài khoản hoặc mật khẩu thử nghiệm.");};Controls.AddRange(new Control[]{u,p,demo,new Label{Text="Quyền ghi thật do Google và quản trị viên cấp.",Left=35,Top=324,Width=370,Height=30}});AcceptButton=online;}
 }
 class Google {
  const string Scope="https://www.googleapis.com/auth/spreadsheets.readonly openid email";
@@ -57,7 +57,7 @@ class MainForm:Form {
  TextBox workspaceDetail;
  bool workspaceChanging;
  void ModernLayout(){
- Text="MCE WORKSPACE | V5.4.1";BackColor=Color.FromArgb(245,247,250);
+ Text="MCE WORKSPACE | V5.4.2";BackColor=Color.FromArgb(245,247,250);
  var side=Controls.OfType<FlowLayoutPanel>().First();
  var content=Controls.OfType<TableLayoutPanel>().First();
  side.Width=238;side.BackColor=Color.FromArgb(245,247,250);side.Padding=new Padding(10);
@@ -130,7 +130,49 @@ class MainForm:Form {
  bool CanWrite(){if(IsDemo){MessageBox.Show("DEMO không có quyền ghi.");return false;}if(busy){MessageBox.Show("Đang xử lý dữ liệu.");return false;}if(!backend.Configured){MessageBox.Show("Chưa thiết lập dịch vụ trung tâm. Chọn Cấu hình dịch vụ.");return false;}if(liveRole!="admin"&&liveRole!="kho"){MessageBox.Show("Tài khoản Google chưa có quyền ghi. Đồng bộ và kiểm tra phân quyền.");return false;}return true;}
  void ConfigureBackend(){if(busy)return;var a=Fields.Ask("Cấu hình dịch vụ MCE",new[]{"URL Google Apps Script /exec"},new[]{backend.Url},null);if(a==null)return;try{backend.Set(a[0]);liveAlias="";liveRole="xem";RefreshAdminMenu();Sync(true);}catch(Exception e){MessageBox.Show(e.Message);}}
  async void WriteAction(string action,Dictionary<string,object> data){if(!CanWrite())return;busy=true;status.Text="Đang gửi yêu cầu lên kho chính...";bool ok=false;try{var ret=App.Obj(await backend.Call(await google.Access(true),action,data));ok=true;MessageBox.Show("Đã xác nhận trên máy chủ."+(App.Get(ret,"code")!=null?" Mã: "+App.Str(App.Get(ret,"code")):""),"MCE");}catch(Exception ex){MessageBox.Show(ex.Message+"\nNếu mất kết nối sau khi gửi, hãy đồng bộ và kiểm tra lịch sử trước khi làm lại.","MCE");}finally{busy=false;}Sync(false);}
- void DoTransaction(string kind){if(!CanWrite())return;var r=history?null:Selected();string code=r==null?"":r[0];var fields=Fields.Ask(kind=="NHẬP"?"Nhập kho":"Xuất kho",new[]{"Mã MCE","Số lượng","Bộ phận / dự án","Ghi chú"},new[]{code,"1","Xưởng",""},null);if(fields==null)return;decimal q;if(!Decimal.TryParse(fields[1].Replace(',','.'),NumberStyles.AllowDecimalPoint,CultureInfo.InvariantCulture,out q)||q<=0){MessageBox.Show("Số lượng không hợp lệ.");return;}if(MessageBox.Show(kind+" "+fields[1]+" | "+fields[0]+" vào kho chính?","Xác nhận",MessageBoxButtons.YesNo)!=DialogResult.Yes)return;WriteAction("transaction",new Dictionary<string,object>{{"code",fields[0]},{"qty",q},{"type",kind},{"project",fields[2]},{"note",fields[3]}});}
+
+ void DoTransaction(string kind){
+ if(!CanWrite())return;
+ var selected=history?null:Selected();
+ var items=stock.Where(r=>r!=null&&r.Length>=12&&!String.IsNullOrWhiteSpace(r[0])&&!String.IsNullOrWhiteSpace(r[1])).GroupBy(r=>r[0],StringComparer.OrdinalIgnoreCase).Where(g=>g.Count()==1).Select(g=>g.First()).OrderBy(r=>r[1]).ThenBy(r=>r[2]).ToList();
+ using(var f=new Form{Text=kind=="NHẬP"?"MCE | Nhập kho":"MCE | Xuất kho",ClientSize=new Size(760,635),StartPosition=FormStartPosition.CenterParent,Font=new Font("Segoe UI",10),BackColor=Color.White,FormBorderStyle=FormBorderStyle.FixedDialog,MaximizeBox=false,MinimizeBox=false}){
+ Action<string,int> label=(t,y)=>f.Controls.Add(new Label{Text=t,Left=20,Top=y,Width=720,Height=24});
+ label("Tìm tên vật tư / mã MCE / thông số kỹ thuật",12);
+ var filter=new TextBox{Left=20,Top=37,Width=720};
+ var results=new ListBox{Left=20,Top=72,Width=720,Height=146,HorizontalScrollbar=true,IntegralHeight=false};
+ label("Mã MCE / thông số kỹ thuật / tồn hiện tại",222);
+ var info=new TextBox{Left=20,Top=247,Width=720,ReadOnly=true,BackColor=Color.FromArgb(240,244,249)};
+ label("Ngày "+(kind=="NHẬP"?"nhập":"xuất")+" (máy chủ hiện chỉ ghi ngày hiện tại)",282);
+ var date=new DateTimePicker{Left=20,Top=307,Width=350,Format=DateTimePickerFormat.Custom,CustomFormat="dd/MM/yyyy",Value=DateTime.Today,MaxDate=DateTime.Today.AddDays(1).AddTicks(-1)};
+ f.Controls.Add(new Label{Text="Người nhập liệu (tài khoản xác thực)",Left=390,Top=282,Width=350,Height=24});
+ var actor=new TextBox{Left=390,Top=307,Width=350,ReadOnly=true,Text=liveAlias,BackColor=Color.FromArgb(240,244,249)};
+ label("Số lượng",342);var qty=new TextBox{Left=20,Top=367,Width=720,Text="1"};
+ label("Bộ phận / dự án",402);var project=new ComboBox{Left=20,Top=427,Width=720,DropDownStyle=ComboBoxStyle.DropDown,Text="Xưởng"};
+ project.Items.AddRange(tx.Where(r=>r.Length>7&&!String.IsNullOrWhiteSpace(r[7])).Select(r=>r[7]).Concat(new[]{"Xưởng"}).Distinct(StringComparer.CurrentCultureIgnoreCase).OrderBy(x=>x).Cast<object>().ToArray());project.AutoCompleteMode=AutoCompleteMode.SuggestAppend;project.AutoCompleteSource=AutoCompleteSource.ListItems;
+ label("Ghi chú",462);var note=new TextBox{Left=20,Top=487,Width=720};
+ var hint=new Label{Left=20,Top=525,Width=720,Height=39,ForeColor=Color.FromArgb(105,85,40),Text="Chọn đúng tên + quy cách. Ngày khác hôm nay cần nâng cấp dịch vụ Google Apps Script trước."};
+ var ok=new Button{Text="Xác nhận",Left=450,Top=578,Width=140,Height=38,BackColor=blue,ForeColor=Color.White,FlatStyle=FlatStyle.Flat};var cancel=new Button{Text="Hủy",Left=600,Top=578,Width=140,Height=38,DialogResult=DialogResult.Cancel};
+ var visible=new List<string[]>();
+ Action refresh=()=>{string q=filter.Text.Trim();visible=items.Where(r=>q.Length==0||String.Join(" ",new[]{r[0],r[1],r[2]}).IndexOf(q,StringComparison.CurrentCultureIgnoreCase)>=0).ToList();results.BeginUpdate();try{results.Items.Clear();foreach(var r in visible)results.Items.Add(r[1]+" | "+r[2]+" | "+r[0]);}finally{results.EndUpdate();}info.Clear();};
+ results.SelectedIndexChanged+=(sender,e)=>{int i=results.SelectedIndex;if(i>=0&&i<visible.Count){var r=visible[i];info.Text=r[0]+" | "+r[2]+" | Tồn: "+r[10]+" "+r[5];}else info.Clear();};
+ filter.TextChanged+=(sender,e)=>refresh();
+ f.Controls.AddRange(new Control[]{filter,results,info,date,actor,qty,project,note,hint,ok,cancel});
+ refresh();if(selected!=null&&selected.Length>0){filter.Text=selected[0];int idx=visible.FindIndex(r=>r[0]==selected[0]);if(idx>=0)results.SelectedIndex=idx;}
+ f.AcceptButton=ok;f.CancelButton=cancel;
+ ok.Click+=(sender,e)=>{
+ if(results.SelectedIndex<0||results.SelectedIndex>=visible.Count){MessageBox.Show("Chọn chính xác vật tư trong danh sách.");return;}
+ if(date.Value.Date!=DateTime.Today){MessageBox.Show("Dịch vụ hiện tại chỉ lưu ngày giao dịch thực tế. Chưa thể ghi ngày khác hôm nay.");return;}
+ if(String.IsNullOrWhiteSpace(liveAlias)){MessageBox.Show("Chưa xác thực người nhập liệu. Đồng bộ lại.");return;}
+ decimal q;if(!Decimal.TryParse(qty.Text.Replace(',','.'),NumberStyles.AllowDecimalPoint,CultureInfo.InvariantCulture,out q)||q<=0){MessageBox.Show("Số lượng không hợp lệ.");return;}
+ if(String.IsNullOrWhiteSpace(project.Text)){MessageBox.Show("Nhập bộ phận / dự án.");return;}
+ var r=visible[results.SelectedIndex];
+ if(MessageBox.Show(kind+" "+q+" "+r[5]+" | "+r[1]+" | "+r[2]+" | "+r[0]+"?","Xác nhận",MessageBoxButtons.YesNo)!=DialogResult.Yes)return;
+ f.DialogResult=DialogResult.OK;
+ WriteAction("transaction",new Dictionary<string,object>{{"code",r[0]},{"qty",q},{"type",kind},{"project",project.Text.Trim()},{"note",note.Text.Trim()}});
+ };
+ f.ShowDialog(this);
+ }
+ }
  void AddMaterial(){if(!CanWrite())return;var a=MaterialPicker.Ask(this,stock);if(a==null)return;WriteAction("addMaterial",new Dictionary<string,object>{{"name",a[0]},{"group",a[1]},{"sub",a[2]},{"spec",a[3]},{"unit",a[4]},{"brand",a[5]}});}
  void EditTransaction(){if(!CanWrite())return;if(!history){history=true;title.Text="Lịch sử nhập xuất";group.Enabled=false;Render();MessageBox.Show("Chọn một dòng giao dịch rồi nhấn Sửa giao dịch.");return;}var r=Selected();if(r==null||r.Length<13||r[12]==""){MessageBox.Show("Cần chọn giao dịch đã đồng bộ.");return;}var a=Fields.Ask("Sửa giao dịch (giới hạn 48 giờ cho Kho)",new[]{"Loại phiếu","Số lượng","Bộ phận / dự án","Ghi chú"},new[]{r[1],r[6],r[7],r[9]},new Dictionary<int,string[]>{{0,new[]{"NHẬP","XUẤT"}}});if(a==null)return;decimal q;if(!Decimal.TryParse(a[1].Replace(',','.'),NumberStyles.AllowDecimalPoint,CultureInfo.InvariantCulture,out q)||q<=0){MessageBox.Show("Số lượng không hợp lệ.");return;}WriteAction("editTransaction",new Dictionary<string,object>{{"row",r[12]},{"original",r.Take(10).ToArray()},{"type",a[0]},{"qty",q},{"project",a[2]},{"note",a[3]}});}
  async void ManageUsers(){if(!VerifiedAdmin()||!CanWrite())return;busy=true;object data=null;try{data=await backend.Call(await google.Access(true),"listUsers",null);}catch(Exception ex){MessageBox.Show(ex.Message);}finally{busy=false;}if(data==null)return;var rows=App.Arr(data).Select(App.Obj).ToList();string info=String.Join("\n",rows.Select(x=>App.Str(App.Get(x,"email"))+" | "+App.Str(App.Get(x,"alias"))+" | "+App.Str(App.Get(x,"role"))+" | "+App.Str(App.Get(x,"enabled"))));MessageBox.Show(info==""?"Chưa có tài khoản cấp dưới.":info,"Danh sách tài khoản được quản lý");var roles=liveRole=="admin"?new[]{"admin","kho","kythuat","xem"}:new[]{"kythuat","xem"};var a=Fields.Ask("Cấp quyền / khóa tài khoản Google",new[]{"Email Google","Tên hiển thị","Vai trò","Trạng thái"},new[]{"","",roles.Last(),"Hoạt động"},new Dictionary<int,string[]>{{2,roles},{3,new[]{"Hoạt động","Khóa"}}});if(a==null)return;WriteAction("setUser",new Dictionary<string,object>{{"email",a[0]},{"alias",a[1]},{"role",a[2]},{"enabled",a[3]=="Hoạt động"}});}
