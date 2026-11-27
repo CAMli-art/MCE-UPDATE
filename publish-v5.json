@@ -1,5 +1,5 @@
 {
-  "version": "5.5.1",
+  "version": "5.5.2",
   "source_mode": "files",
-  "notes": "Match approved concept layout: 2x2 KPI, compact three-column material list, flat sidebar, image/detail card and AI card below table; preserve all underlying columns and operations."
+  "notes": "Compact reference-inspired material card, reliable selected-row details, search placeholder and Google image search by name/spec/brand. No automatic photo assignment."
 }
