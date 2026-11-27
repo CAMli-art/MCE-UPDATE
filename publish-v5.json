@@ -1,5 +1,5 @@
 {
-  "version": "5.5.0",
+  "version": "5.5.1",
   "source_mode": "files",
-  "notes": "Workspace visual redesign: navy header, compact sidebar, live KPI cards, actual stock status filters, existing photo/details and ChatGPT Plus handoff. No inferred location data."
+  "notes": "Match approved concept layout: 2x2 KPI, compact three-column material list, flat sidebar, image/detail card and AI card below table; preserve all underlying columns and operations."
 }
