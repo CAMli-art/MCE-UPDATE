@@ -26,7 +26,7 @@ static class App {
 }
 class Login:Form {
  public string User; TextBox u=new TextBox(),p=new TextBox();
- public Login(){Text="MCE Workspace V5.3.0 | Đăng nhập";StartPosition=FormStartPosition.CenterScreen;ClientSize=new Size(440,375);FormBorderStyle=FormBorderStyle.FixedDialog;MaximizeBox=false;Font=new Font("Segoe UI",10);BackColor=Color.White;Controls.Add(new Label{Text="MCE  |  QUẢN LÝ KHO",ForeColor=Color.White,BackColor=Color.FromArgb(23,46,73),Dock=DockStyle.Top,Height=76,TextAlign=ContentAlignment.MiddleCenter,Font=new Font("Segoe UI",17,FontStyle.Bold)});var online=new Button{Text="Đăng nhập Google - dữ liệu thật",Left=35,Top=96,Width=370,Height=44,BackColor=Color.FromArgb(22,117,209),ForeColor=Color.White,FlatStyle=FlatStyle.Flat};online.Click+=(s,e)=>{User="Google";DialogResult=DialogResult.OK;};Controls.Add(online);Controls.Add(new Label{Text="Chế độ DEMO (không truy cập kho thật)",Left=35,Top=155,Width=370,Height=28});u.SetBounds(35,184,370,30);u.Text="xem";p.SetBounds(35,224,370,30);p.UseSystemPasswordChar=true;var demo=new Button{Text="Vào bản thử nghiệm",Left=35,Top=268,Width=370,Height=40};demo.Click+=(s,e)=>{string name=u.Text.Trim().ToLowerInvariant();if(new[]{"admin","kho","kythuat","xem"}.Contains(name)&&p.Text=="123123"){User=name;DialogResult=DialogResult.OK;}else MessageBox.Show("Sai tài khoản hoặc mật khẩu thử nghiệm.");};Controls.AddRange(new Control[]{u,p,demo,new Label{Text="Quyền ghi thật do Google và quản trị viên cấp.",Left=35,Top=324,Width=370,Height=30}});AcceptButton=online;}
+ public Login(){Text="MCE Workspace V5.4.0 | Đăng nhập";StartPosition=FormStartPosition.CenterScreen;ClientSize=new Size(440,375);FormBorderStyle=FormBorderStyle.FixedDialog;MaximizeBox=false;Font=new Font("Segoe UI",10);BackColor=Color.White;Controls.Add(new Label{Text="MCE  |  QUẢN LÝ KHO",ForeColor=Color.White,BackColor=Color.FromArgb(23,46,73),Dock=DockStyle.Top,Height=76,TextAlign=ContentAlignment.MiddleCenter,Font=new Font("Segoe UI",17,FontStyle.Bold)});var online=new Button{Text="Đăng nhập Google - dữ liệu thật",Left=35,Top=96,Width=370,Height=44,BackColor=Color.FromArgb(22,117,209),ForeColor=Color.White,FlatStyle=FlatStyle.Flat};online.Click+=(s,e)=>{User="Google";DialogResult=DialogResult.OK;};Controls.Add(online);Controls.Add(new Label{Text="Chế độ DEMO (không truy cập kho thật)",Left=35,Top=155,Width=370,Height=28});u.SetBounds(35,184,370,30);u.Text="xem";p.SetBounds(35,224,370,30);p.UseSystemPasswordChar=true;var demo=new Button{Text="Vào bản thử nghiệm",Left=35,Top=268,Width=370,Height=40};demo.Click+=(s,e)=>{string name=u.Text.Trim().ToLowerInvariant();if(new[]{"admin","kho","kythuat","xem"}.Contains(name)&&p.Text=="123123"){User=name;DialogResult=DialogResult.OK;}else MessageBox.Show("Sai tài khoản hoặc mật khẩu thử nghiệm.");};Controls.AddRange(new Control[]{u,p,demo,new Label{Text="Quyền ghi thật do Google và quản trị viên cấp.",Left=35,Top=324,Width=370,Height=30}});AcceptButton=online;}
 }
 class Google {
  const string Scope="https://www.googleapis.com/auth/spreadsheets.readonly openid email";
@@ -57,7 +57,7 @@ class MainForm:Form {
  TextBox workspaceDetail;
  bool workspaceChanging;
  void ModernLayout(){
- Text="MCE WORKSPACE | V5.3.0";BackColor=Color.FromArgb(245,247,250);
+ Text="MCE WORKSPACE | V5.4.0";BackColor=Color.FromArgb(245,247,250);
  var side=Controls.OfType<FlowLayoutPanel>().First();
  var content=Controls.OfType<TableLayoutPanel>().First();
  side.Width=238;side.BackColor=Color.FromArgb(245,247,250);side.Padding=new Padding(10);
@@ -76,11 +76,28 @@ class MainForm:Form {
  workspaceDetail=new TextBox{Dock=DockStyle.Fill,Multiline=true,ReadOnly=true,ScrollBars=ScrollBars.Vertical,BorderStyle=BorderStyle.None,BackColor=Color.White,Font=new Font("Segoe UI",10)};
  workspaceRight.Controls.Add(workspaceDetail);
  var heading=new Label{Text="CHI TIẾT / TRUY VẾT",Dock=DockStyle.Top,Height=32,Font=new Font("Segoe UI",10,FontStyle.Bold),ForeColor=navy};workspaceRight.Controls.Add(heading);
+ var aiBar=new FlowLayoutPanel{Dock=DockStyle.Bottom,Height=112,FlowDirection=FlowDirection.TopDown,WrapContents=false,BackColor=Color.FromArgb(239,244,250),Padding=new Padding(4)};
+ var aiOpen=Btn("Mở ChatGPT Plus",()=>WorkspaceChat(false));aiOpen.Width=225;aiOpen.AutoSize=false;
+ var aiCopy=Btn("Sao chép dòng + mở ChatGPT",()=>WorkspaceChat(true));aiCopy.Width=225;aiCopy.AutoSize=false;
+ aiBar.Controls.Add(aiOpen);aiBar.Controls.Add(aiCopy);workspaceRight.Controls.Add(aiBar);aiBar.BringToFront();
+ 
  var toggle=Btn("Chi tiết",()=>{split.Panel2Collapsed=!split.Panel2Collapsed;});toggle.Dock=DockStyle.Right;toggle.Width=85;toggle.AutoSize=false;
  var header=new Panel{Dock=DockStyle.Fill};content.Controls.Remove(title);header.Controls.Add(title);header.Controls.Add(toggle);content.Controls.Add(header,0,0);
  split.SizeChanged+=(sender,e)=>{if(!split.Panel2Collapsed&&split.Width>500){try{split.SplitterDistance=Math.Max(260,split.Width-275);}catch(ArgumentException){}}};
  grid.RowTemplate.Height=27;grid.ColumnHeadersHeight=32;grid.Font=new Font("Segoe UI",9);grid.ColumnHeadersDefaultCellStyle.BackColor=Color.FromArgb(231,237,245);grid.ColumnHeadersDefaultCellStyle.ForeColor=navy;grid.CellBorderStyle=DataGridViewCellBorderStyle.SingleHorizontal;grid.GridColor=Color.FromArgb(225,230,237);grid.DefaultCellStyle.SelectionBackColor=Color.FromArgb(212,229,250);grid.DefaultCellStyle.SelectionForeColor=navy;
  grid.SelectionChanged+=(sender,e)=>WorkspaceDetails();ModernRefresh();
+ }
+ void WorkspaceChat(bool copy){
+ try{
+ if(copy){
+ var r=Selected();var labels=history?tc:sc;
+ if(r==null||r.Length<labels.Length){MessageBox.Show("Chọn một dòng vật tư hoặc giao dịch trước.");return;}
+ if(MessageBox.Show("Sao chép thông tin dòng đang chọn vào clipboard? Chỉ dán sang ChatGPT nếu bạn được phép chia sẻ dữ liệu này.","MCE | ChatGPT Plus",MessageBoxButtons.YesNo,MessageBoxIcon.Question)!=DialogResult.Yes)return;
+ Clipboard.SetText("Hãy phân tích dữ liệu MCE sau và không suy diễn thông tin chưa có:\r\n"+String.Join(Environment.NewLine,labels.Select((x,i)=>x+": "+r[i])));
+ }
+ Process.Start(new ProcessStartInfo("https://chatgpt.com/"){UseShellExecute=true});
+ if(copy)MessageBox.Show("Đã sao chép. Nhấn Ctrl+V trong ChatGPT để gửi nội dung theo ý bạn.","MCE | ChatGPT Plus");
+ }catch(Exception ex){MessageBox.Show(ex.Message,"MCE | ChatGPT Plus");}
  }
  void WorkspaceDetails(){
  if(workspaceDetail==null)return;
