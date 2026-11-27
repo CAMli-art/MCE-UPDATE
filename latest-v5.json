@@ -1,9 +1,9 @@
 {
-  "commit": "1f0dec92e9d9972a857c780ad2ab2ffed8f555e1",
-  "version": "5.4.2",
+  "commit": "217666fcab575cd7b0eda7b6aabff51e35d8f080",
   "files": {
-    "channel.json": "f2d9ecffd7901c56c2e6fee0ccb6757e87be9e9cb1c59b3263951c9b773ca3c5",
-    "MCE.Client.exe": "697ed4d0f6c35845ac1e4288ba8c0c38a2224db023eaca4cf529ccab02d48d3e"
+    "MCE.Client.exe": "958fb0ee36d819516ef6ece3b36206a21f105e82d19ef3fef3d2536d6cf3396d",
+    "channel.json": "d855a45bc07878735beda2afedec6b97f13986654b16cbb3b2e30d0babaae25b"
   },
-  "notes": "Windows compilation and basic self-test passed; channel checksum corrected against exact Git blob bytes"
+  "version": "5.4.3",
+  "notes": "Windows compilation and basic self-test passed; automatic update"
 }
