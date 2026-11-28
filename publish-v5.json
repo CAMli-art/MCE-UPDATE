@@ -1,5 +1,5 @@
 {
-  "version": "5.6.1",
+  "version": "5.6.2",
   "source_mode": "files",
-  "notes": "Local project transaction lookup and CSV export, no AI dependency."
+  "notes": "Modern Multi AI UI, live local stock and transaction search, source link and CSV."
 }
