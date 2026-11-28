@@ -1,5 +1,5 @@
 {
-  "version": "5.6.5",
+  "version": "5.6.6",
   "source_mode": "files",
-  "notes": "Inline history editing with role and 48-hour checks, server confirmation, original row comparison; retain image fixes."
+  "notes": "Wider transaction history and spreadsheet-style quick entry, retain inline permissions and image fixes."
 }
