@@ -1,9 +1,9 @@
 {
   "files": {
-    "channel.json": "074bb56f8abf7322af5e19f63b3d69f42f25cc62dbe6ac4e527cc6a6ecfcc88e",
-    "MCE.Client.exe": "1af1855a11dc2e780127dc5e913d8525eec407c23ebee7ec4036d019fa0546c3"
+    "MCE.Client.exe": "f9a1a2235234672946d1b5e666db7c627ad9486c8767c75c454dda945525f580",
+    "channel.json": "071692125f62ce6b68a9626ed48be2b2c7fc87bbe7f8c2fc2982d9df782fbb3a"
   },
-  "commit": "1dca72f0f569337d9f2a387d2d301f1fe6bf104e",
-  "version": "5.6.2",
-  "notes": "Windows compilation and basic self-test passed; automatic update"
+  "version": "5.6.3",
+  "notes": "Windows compilation and basic self-test passed; automatic update",
+  "commit": "00854548a0add1e74e86e943dd60a8a4dc62fc7a"
 }
