@@ -1,5 +1,5 @@
 {
-  "version": "5.6.6",
+  "version": "5.6.7",
   "source_mode": "files",
-  "notes": "Wider transaction history and spreadsheet-style quick entry, retain inline permissions and image fixes."
+  "notes": "Embedded quick transaction entry on history page; no separate entry window; server permissions retained."
 }
