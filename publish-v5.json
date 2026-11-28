@@ -1,5 +1,5 @@
 {
-  "version": "5.5.3",
+  "version": "5.6.0",
   "source_mode": "files",
-  "notes": "Initial reference photo mapping for 42 material codes using real product photo URLs; manual images override reference photos."
+  "notes": "Multi AI assistant: Gemini, Groq, Ollama; DPAPI settings; read-only selected material context."
 }
