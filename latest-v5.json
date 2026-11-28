@@ -1,9 +1,9 @@
 {
-  "commit": "4c46084542d26b3b8bd1de27e24aa4ae7244c16f",
-  "notes": "Windows compilation and basic self-test passed; automatic update",
+  "commit": "b5dddac57b4415807543f0c026cb656b055e28df",
   "files": {
-    "channel.json": "5240e16448b325f5b1300ec319e9114ccda71854daa5b92e80d0efbbe6b94e1f",
-    "MCE.Client.exe": "d748b226c8e189c1b556d54259c8812771b25567709fb9935defb2e6b23769c1"
+    "MCE.Client.exe": "2f41907ca81e2d88af6e9474e0348236c0c73047d36750196303fa490e8f23b6",
+    "channel.json": "880cf3cad201049ffee3cd613d5df1c01656c5d75431663400c9de4007a0dfaa"
   },
-  "version": "5.6.0"
+  "version": "5.6.1",
+  "notes": "Windows compilation and basic self-test passed; automatic update"
 }
