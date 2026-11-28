@@ -46,6 +46,7 @@ class Setup {
  }
  [STAThread]static int Main(string[] args){try{if(args.Contains("--self-test")){foreach(var n in new[]{"MCE.exe","MCE.Client.exe","channel.json"})if(Resource(n).Length<20)return 2;return 0;}
  Application.EnableVisualStyles();var exe=File.ReadAllBytes(Application.ExecutablePath);var c=ReadPackage(exe);if(c!=null){if(MessageBox.Show("Cai MCE Workspace cho tai khoan Windows hien tai?","MCE Setup",MessageBoxButtons.OKCancel)==DialogResult.OK)Install(c,false);return 0;}
+ var repairChoice=MessageBox.Show("Cài / sửa bộ tự cập nhật MCE trên máy này? Giữ nguyên cấu hình và dữ liệu hiện có. Chọn No để tạo bộ cài nhân viên.","MCE Setup",MessageBoxButtons.YesNoCancel);if(repairChoice==DialogResult.Cancel)return 0;if(repairChoice==DialogResult.Yes){Install(ReadLocal(),false);return 0;}
  if(MessageBox.Show("Chay tren may quan tri MCE da cau hinh de tao bo cai nhan vien.\nKhong sao chep token hay mat khau.\nTao bo cai ngay?","MCE Setup - Quan tri",MessageBoxButtons.OKCancel)==DialogResult.OK)Export(exe);return 0;
  }catch(Exception e){MessageBox.Show(e.Message,"MCE Setup");return 1;}}
 }
