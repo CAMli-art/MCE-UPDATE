@@ -22,11 +22,11 @@ static class App {
  public static string At(object[] a,int i){return i<a.Length?Str(a[i]):"";}
  public static string Read(string p){return File.ReadAllText(p,Encoding.UTF8);}
  public static void Save(string p,string t){string tmp=p+".tmp";File.WriteAllText(tmp,t,Encoding.UTF8);if(File.Exists(p))File.Replace(tmp,p,null);else File.Move(tmp,p);}
- [STAThread] static void Main(string[] args){if(args.Contains("--self-test")){if(!MaterialPicker.SelfTest())Environment.Exit(2);return;}Directory.CreateDirectory(Home);ServicePointManager.SecurityProtocol=(SecurityProtocolType)3072;Application.EnableVisualStyles();Application.SetCompatibleTextRenderingDefault(false);using(var login=new Login()){if(login.ShowDialog()!=DialogResult.OK)return;Application.Run(new MainForm(login.User));}}
+ [STAThread] static void Main(string[] args){if(args.Contains("--self-test")){if(!MaterialPicker.SelfTest()||!MainForm.PhotoSelfTest())Environment.Exit(2);return;}Directory.CreateDirectory(Home);ServicePointManager.SecurityProtocol=(SecurityProtocolType)3072;Application.EnableVisualStyles();Application.SetCompatibleTextRenderingDefault(false);using(var login=new Login()){if(login.ShowDialog()!=DialogResult.OK)return;Application.Run(new MainForm(login.User));}}
 }
 class Login:Form {
  public string User; TextBox u=new TextBox(),p=new TextBox();
- public Login(){Text="MCE Workspace V5.6.3 | Đăng nhập";StartPosition=FormStartPosition.CenterScreen;ClientSize=new Size(440,375);FormBorderStyle=FormBorderStyle.FixedDialog;MaximizeBox=false;Font=new Font("Segoe UI",10);BackColor=Color.White;Controls.Add(new Label{Text="MCE  |  QUẢN LÝ KHO",ForeColor=Color.White,BackColor=Color.FromArgb(23,46,73),Dock=DockStyle.Top,Height=76,TextAlign=ContentAlignment.MiddleCenter,Font=new Font("Segoe UI",17,FontStyle.Bold)});var online=new Button{Text="Đăng nhập Google - dữ liệu thật",Left=35,Top=96,Width=370,Height=44,BackColor=Color.FromArgb(22,117,209),ForeColor=Color.White,FlatStyle=FlatStyle.Flat};online.Click+=(s,e)=>{User="Google";DialogResult=DialogResult.OK;};Controls.Add(online);Controls.Add(new Label{Text="Chế độ DEMO (không truy cập kho thật)",Left=35,Top=155,Width=370,Height=28});u.SetBounds(35,184,370,30);u.Text="xem";p.SetBounds(35,224,370,30);p.UseSystemPasswordChar=true;var demo=new Button{Text="Vào bản thử nghiệm",Left=35,Top=268,Width=370,Height=40};demo.Click+=(s,e)=>{string name=u.Text.Trim().ToLowerInvariant();if(new[]{"admin","kho","kythuat","xem"}.Contains(name)&&p.Text=="123123"){User=name;DialogResult=DialogResult.OK;}else MessageBox.Show("Sai tài khoản hoặc mật khẩu thử nghiệm.");};Controls.AddRange(new Control[]{u,p,demo,new Label{Text="Quyền ghi thật do Google và quản trị viên cấp.",Left=35,Top=324,Width=370,Height=30}});AcceptButton=online;}
+ public Login(){Text="MCE Workspace V5.6.4 | Đăng nhập";StartPosition=FormStartPosition.CenterScreen;ClientSize=new Size(440,375);FormBorderStyle=FormBorderStyle.FixedDialog;MaximizeBox=false;Font=new Font("Segoe UI",10);BackColor=Color.White;Controls.Add(new Label{Text="MCE  |  QUẢN LÝ KHO",ForeColor=Color.White,BackColor=Color.FromArgb(23,46,73),Dock=DockStyle.Top,Height=76,TextAlign=ContentAlignment.MiddleCenter,Font=new Font("Segoe UI",17,FontStyle.Bold)});var online=new Button{Text="Đăng nhập Google - dữ liệu thật",Left=35,Top=96,Width=370,Height=44,BackColor=Color.FromArgb(22,117,209),ForeColor=Color.White,FlatStyle=FlatStyle.Flat};online.Click+=(s,e)=>{User="Google";DialogResult=DialogResult.OK;};Controls.Add(online);Controls.Add(new Label{Text="Chế độ DEMO (không truy cập kho thật)",Left=35,Top=155,Width=370,Height=28});u.SetBounds(35,184,370,30);u.Text="xem";p.SetBounds(35,224,370,30);p.UseSystemPasswordChar=true;var demo=new Button{Text="Vào bản thử nghiệm",Left=35,Top=268,Width=370,Height=40};demo.Click+=(s,e)=>{string name=u.Text.Trim().ToLowerInvariant();if(new[]{"admin","kho","kythuat","xem"}.Contains(name)&&p.Text=="123123"){User=name;DialogResult=DialogResult.OK;}else MessageBox.Show("Sai tài khoản hoặc mật khẩu thử nghiệm.");};Controls.AddRange(new Control[]{u,p,demo,new Label{Text="Quyền ghi thật do Google và quản trị viên cấp.",Left=35,Top=324,Width=370,Height=30}});AcceptButton=online;}
 }
 class Google {
  const string Scope="https://www.googleapis.com/auth/spreadsheets.readonly openid email";
@@ -74,7 +74,7 @@ class MainForm:Form {
  workspaceKpi[2].Text=stock.Count(r=>r.Length>=12&&new[]{"CẦN NHẬP","HẾT HÀNG"}.Contains(r[11])).ToString("N0");
  workspaceKpi[3].Text=stock.Count(r=>r.Length>=12&&new[]{"ÂM KHO","TRÙNG MÃ","CẦN ĐỐI SOÁT"}.Contains(r[11])).ToString("N0");
  foreach(var entry in workspaceFilters){entry.Key.Enabled=!history;entry.Key.BackColor=entry.Value==workspaceFilter&&!history?Color.FromArgb(213,230,252):Color.White;}
- if(workspaceAccount!=null)workspaceAccount.Text=(liveAlias==""?"Chỉ đọc":liveAlias+" / "+liveRole)+"    |    V5.6.3";
+ if(workspaceAccount!=null)workspaceAccount.Text=(liveAlias==""?"Chỉ đọc":liveAlias+" / "+liveRole)+"    |    V5.6.4";
  }
 
  class SoftCard:Panel {
@@ -83,7 +83,7 @@ class MainForm:Form {
  }
  Button CleanButton(string text,Action action){var b=Btn(text,action);b.FlatStyle=FlatStyle.Flat;b.FlatAppearance.BorderSize=0;b.FlatAppearance.MouseOverBackColor=Color.FromArgb(229,239,252);b.BackColor=Color.White;b.Font=new Font("Segoe UI",10);b.Cursor=Cursors.Hand;return b;}
  void ModernLayout(){
- Text="MCE WORKSPACE | V5.6.3";BackColor=Color.White;
+ Text="MCE WORKSPACE | V5.6.4";BackColor=Color.White;
  var side=Controls.OfType<FlowLayoutPanel>().First();
  var content=Controls.OfType<TableLayoutPanel>().First();
  var buttons=side.Controls.OfType<Button>().ToArray();
@@ -198,50 +198,63 @@ class MainForm:Form {
 {"MCE-0707","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"},
 {"MCE-0710","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"}};
  readonly HashSet<string> pendingPhotos=new HashSet<string>();
+
+ static Bitmap DecodePhoto(Stream stream){
+  using(var image=Image.FromStream(stream,true,true)){
+   if(image.Width<1||image.Height<1||(long)image.Width*image.Height>40000000L)throw new InvalidDataException("Ảnh quá lớn. Hãy giảm kích thước xuống dưới 40 megapixel.");
+   double scale=Math.Min(1.0,1000.0/Math.Max(image.Width,image.Height));
+   var bitmap=new Bitmap(Math.Max(1,(int)(image.Width*scale)),Math.Max(1,(int)(image.Height*scale)),System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+   try{using(var g=Graphics.FromImage(bitmap)){g.Clear(Color.White);g.InterpolationMode=System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;g.DrawImage(image,0,0,bitmap.Width,bitmap.Height);}return bitmap;}catch{bitmap.Dispose();throw;}
+  }
+ }
+ static Bitmap ReadPhoto(string path){using(var stream=File.OpenRead(path)){if(stream.Length>20L*1024*1024)throw new InvalidDataException("Ảnh vượt quá 20 MB.");return DecodePhoto(stream);}}
+ static void StorePhoto(Bitmap bmp,string path){Directory.CreateDirectory(Path.GetDirectoryName(path));string temp=path+"."+Guid.NewGuid().ToString("N")+".tmp";try{using(var stream=new FileStream(temp,FileMode.CreateNew,FileAccess.Write,FileShare.None)){bmp.Save(stream,System.Drawing.Imaging.ImageFormat.Jpeg);}if(File.Exists(path))File.Replace(temp,path,null);else File.Move(temp,path);}finally{if(File.Exists(temp))File.Delete(temp);}}
+ void ShowPhoto(Bitmap bmp,string label){var old=materialPhoto.Image;materialPhoto.Image=bmp;if(old!=null)old.Dispose();photoLabel.Text=label;}
+ bool TryShowPhoto(string path,string label){try{if(!File.Exists(path))return false;ShowPhoto(ReadPhoto(path),label);return true;}catch{return false;}}
+ static byte[] DownloadPhoto(string url){using(var wc=new TimedClient())using(var stream=wc.OpenRead(url))using(var mem=new MemoryStream()){byte[] buf=new byte[8192];int n;while((n=stream.Read(buf,0,buf.Length))>0){if(mem.Length+n>10L*1024*1024)throw new InvalidDataException("Ảnh vượt quá 10 MB.");mem.Write(buf,0,n);}return mem.ToArray();}}
+ readonly System.Threading.SemaphoreSlim photoGate=new System.Threading.SemaphoreSlim(2);
  async void LoadReferencePhoto(string code){
  string url;if(!referencePhotos.TryGetValue(code,out url)){var peer=PhotoPeers(code).FirstOrDefault(x=>referencePhotos.ContainsKey(x));if(peer==null)return;url=referencePhotos[peer];}if(!pendingPhotos.Add(code))return;
  try{
  string path=PhotoPath(code)+".reference.jpg";
- if(!File.Exists(path)){
- byte[] data=await System.Threading.Tasks.Task.Run(()=>{using(var wc=new TimedClient()){return wc.DownloadData(url);}});
- if(data.Length>10*1024*1024)throw new Exception("Image too large");
- Directory.CreateDirectory(Path.GetDirectoryName(path));
- using(var stream=new MemoryStream(data))using(var img=Image.FromStream(stream))using(var bmp=new Bitmap(img)){bmp.Save(path,System.Drawing.Imaging.ImageFormat.Jpeg);}
- }
- if(!IsDisposed&&photoKey==code&&!File.Exists(PhotoPath(code))){using(var stream=File.OpenRead(path))using(var img=Image.FromStream(stream)){var old=materialPhoto.Image;materialPhoto.Image=new Bitmap(img);if(old!=null)old.Dispose();}photoLabel.Text=referencePhotos.ContainsKey(code)?"Ảnh tham khảo":"Ảnh chung theo tên (tham khảo)";}
- }catch{if(!IsDisposed&&photoKey==code&&!File.Exists(PhotoPath(code)))photoLabel.Text="Chưa tải được ảnh";}finally{pendingPhotos.Remove(code);}
+ if(TryShowPhoto(path,"Ảnh tham khảo"))return;
+ await photoGate.WaitAsync();try{
+ if(IsDisposed||photoKey!=code)return;
+ await Task.Run(()=>{byte[] data=DownloadPhoto(url);using(var stream=new MemoryStream(data))using(var bmp=DecodePhoto(stream))StorePhoto(bmp,path);});
+ }finally{photoGate.Release();}
+ if(!IsDisposed&&photoKey==code&&!File.Exists(PhotoPath(code)))TryShowPhoto(path,referencePhotos.ContainsKey(code)?"Ảnh tham khảo":"Ảnh chung theo tên (tham khảo)");
+ }catch{if(!IsDisposed&&photoKey==code&&materialPhoto.Image==null)photoLabel.Text="Chưa tải được ảnh tham khảo";}finally{pendingPhotos.Remove(code);}
  }
  IEnumerable<string> PhotoPeers(string code){
  var row=stock.FirstOrDefault(x=>x.Length>=7&&String.Equals(x[0],code,StringComparison.OrdinalIgnoreCase));if(row==null||String.IsNullOrWhiteSpace(row[1]))return Enumerable.Empty<string>();
  return stock.Where(x=>x.Length>=7&&x[0]!=code&&String.Equals(x[1].Trim(),row[1].Trim(),StringComparison.CurrentCultureIgnoreCase)&&String.Equals(x[4].Trim(),row[4].Trim(),StringComparison.CurrentCultureIgnoreCase)&&(String.IsNullOrWhiteSpace(x[6])||String.IsNullOrWhiteSpace(row[6])||String.Equals(x[6].Trim(),row[6].Trim(),StringComparison.CurrentCultureIgnoreCase))).Select(x=>x[0]).Distinct();
  }
+
  void RefreshMaterialPhoto(string code){
  if(materialPhoto==null)return;
  photoChoose.Enabled=!IsDemo&&(liveRole=="admin"||liveRole=="kho")&&code!="";
- if(photoKey==code)return;
- photoKey=code;
- var old=materialPhoto.Image;materialPhoto.Image=null;if(old!=null)old.Dispose();
- photoLabel.Text=code==""?"Chọn vật tư":"Chưa có ảnh";
- if(code=="")return;
- try{string path=PhotoPath(code);if(File.Exists(path)){using(var stream=File.OpenRead(path))using(var image=Image.FromStream(stream)){materialPhoto.Image=new Bitmap(image);}photoLabel.Text=code;}else {var shared=PhotoPeers(code).FirstOrDefault(x=>File.Exists(PhotoPath(x)));if(shared!=null){using(var stream=File.OpenRead(PhotoPath(shared)))using(var image=Image.FromStream(stream)){materialPhoto.Image=new Bitmap(image);}photoLabel.Text="Ảnh chung tham khảo: "+shared;}else LoadReferencePhoto(code);}}catch{photoLabel.Text="Không đọc được ảnh";}
+ if(photoKey==code)return;photoKey=code;ShowPhoto(null,code==""?"Chọn vật tư":"Chưa có ảnh");if(code=="")return;
+ if(TryShowPhoto(PhotoPath(code),code))return;
+ foreach(var shared in PhotoPeers(code)){if(TryShowPhoto(PhotoPath(shared),"Ảnh chung tham khảo: "+shared))return;}
+ LoadReferencePhoto(code);
  }
  void ChooseMaterialPhoto(){
- if(IsDemo||(liveRole!="admin"&&liveRole!="kho")||photoKey=="")return;
- string code=photoKey;
- using(var dlg=new OpenFileDialog{Filter="Ảnh JPG, PNG, BMP|*.jpg;*.jpeg;*.png;*.bmp"}){
+ if(IsDemo||(liveRole!="admin"&&liveRole!="kho")||photoKey=="")return;string code=photoKey;
+ using(var dlg=new OpenFileDialog{Filter="Ảnh JPG, PNG, BMP, GIF, TIFF|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif;*.tiff",CheckFileExists=true}){
  if(dlg.ShowDialog(this)!=DialogResult.OK)return;
  try{
- if(new FileInfo(dlg.FileName).Length>20*1024*1024)throw new Exception("Ảnh tối đa 20 MB.");
- string path=PhotoPath(code);Directory.CreateDirectory(Path.GetDirectoryName(path));
- using(var image=Image.FromFile(dlg.FileName)){
- double scale=Math.Min(1.0,1000.0/Math.Max(image.Width,image.Height));
- using(var bitmap=new Bitmap(Math.Max(1,(int)(image.Width*scale)),Math.Max(1,(int)(image.Height*scale)))){
- using(var g=Graphics.FromImage(bitmap)){g.Clear(Color.White);g.DrawImage(image,0,0,bitmap.Width,bitmap.Height);}
- string temp=path+".tmp";bitmap.Save(temp,System.Drawing.Imaging.ImageFormat.Jpeg);if(File.Exists(path))File.Replace(temp,path,null);else File.Move(temp,path);
- }}
+ using(var bitmap=ReadPhoto(dlg.FileName))StorePhoto(bitmap,PhotoPath(code));
  photoKey="";RefreshMaterialPhoto(code);
- }catch(Exception ex){MessageBox.Show(ex.Message,"Ảnh vật tư");}
+ }catch(OutOfMemoryException){MessageBox.Show("Không giải mã được ảnh. File có thể hỏng, quá lớn hoặc không đúng định dạng. Hãy mở bằng Paint và lưu lại dưới dạng PNG hoặc JPG rồi chọn lại.","Ảnh vật tư");}
+ catch(ArgumentException){MessageBox.Show("File không phải ảnh được hỗ trợ hoặc đã bị hỏng. Hãy lưu lại bằng Paint dưới dạng JPG hoặc PNG.","Ảnh vật tư");}
+ catch(Exception ex){MessageBox.Show(ex.Message,"Ảnh vật tư");}
  }}
+ public static bool PhotoSelfTest(){
+ string dir=Path.Combine(Path.GetTempPath(),"MCE-photo-test-"+Guid.NewGuid().ToString("N"));
+ try{Directory.CreateDirectory(dir);string p=Path.Combine(dir,"test.jpg");using(var b=new Bitmap(1200,600)){StorePhoto(b,p);}using(var b=ReadPhoto(p)){if(b.Width!=1000||b.Height!=500)return false;StorePhoto(b,p);}
+ using(var bad=new MemoryStream(new byte[]{1,2,3,4})){try{using(var b=DecodePhoto(bad)){}return false;}catch(ArgumentException){}catch(OutOfMemoryException){}}
+ return true;}catch{return false;}finally{try{Directory.Delete(dir,true);}catch{}}
+ }
  [System.Runtime.InteropServices.DllImport("user32.dll",CharSet=System.Runtime.InteropServices.CharSet.Unicode)] static extern IntPtr SendMessage(IntPtr h,int msg,IntPtr w,string l);
  void SearchHint(){SendMessage(search.Handle,0x1501,IntPtr.Zero,"Tìm vật tư, mã MCE, thông số kỹ thuật...");}
  void FindMaterialPhoto(){var r=Selected();if(r==null||r.Length<(history?13:12)){MessageBox.Show("Chọn vật tư trước.");return;}string query=history?r[3]+" "+r[4]:r[1]+" "+r[2]+" "+r[6];try{Process.Start(new ProcessStartInfo("https://www.google.com/search?tbm=isch&q="+Uri.EscapeDataString(query.Trim())){UseShellExecute=true});}catch(Exception ex){MessageBox.Show(ex.Message);}}
@@ -353,7 +366,7 @@ class MultiAI : Form {
  string settings=Path.Combine(App.Home,"ai-settings.bin");
  readonly Func<string[][]> transactions, inventory; readonly Func<string> snapshotStatus; readonly string sourceId; string[] resultHeaders; Panel configPanel; Label sourceLabel;
  public MultiAI(string data,Func<string[][]> rows,Func<string[][]> items,Func<string> state,string id){transactions=rows;inventory=items;snapshotStatus=state;sourceId=id;
- context=data; Text="MCE V5.6.3 | Multi AI Assistant"; StartPosition=FormStartPosition.CenterParent; Size=new Size(880,680); MinimumSize=new Size(650,550); Font=new Font("Segoe UI",10);
+ context=data; Text="MCE V5.6.4 | Multi AI Assistant"; StartPosition=FormStartPosition.CenterParent; Size=new Size(880,680); MinimumSize=new Size(650,550); Font=new Font("Segoe UI",10);
 
  BackColor=Color.FromArgb(16,24,39);ForeColor=Color.White;Size=new Size(1000,750);MinimumSize=new Size(790,630);
  var layout=new TableLayoutPanel{Dock=DockStyle.Fill,ColumnCount=1,RowCount=7,Padding=new Padding(16),BackColor=BackColor};
