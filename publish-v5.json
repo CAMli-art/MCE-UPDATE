@@ -1,5 +1,5 @@
 {
-  "version": "5.6.7",
+  "version": "5.6.8",
   "source_mode": "files",
-  "notes": "Embedded quick transaction entry on history page; no separate entry window; server permissions retained."
+  "notes": "Industrial steel/orange interface, unified transaction navigation, updated AI theme; existing warehouse logic retained."
 }
