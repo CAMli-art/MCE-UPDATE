@@ -26,7 +26,7 @@ static class App {
 }
 class Login:Form {
  public string User; TextBox u=new TextBox(),p=new TextBox();
- public Login(){Text="MCE Workspace V5.6.2 | Đăng nhập";StartPosition=FormStartPosition.CenterScreen;ClientSize=new Size(440,375);FormBorderStyle=FormBorderStyle.FixedDialog;MaximizeBox=false;Font=new Font("Segoe UI",10);BackColor=Color.White;Controls.Add(new Label{Text="MCE  |  QUẢN LÝ KHO",ForeColor=Color.White,BackColor=Color.FromArgb(23,46,73),Dock=DockStyle.Top,Height=76,TextAlign=ContentAlignment.MiddleCenter,Font=new Font("Segoe UI",17,FontStyle.Bold)});var online=new Button{Text="Đăng nhập Google - dữ liệu thật",Left=35,Top=96,Width=370,Height=44,BackColor=Color.FromArgb(22,117,209),ForeColor=Color.White,FlatStyle=FlatStyle.Flat};online.Click+=(s,e)=>{User="Google";DialogResult=DialogResult.OK;};Controls.Add(online);Controls.Add(new Label{Text="Chế độ DEMO (không truy cập kho thật)",Left=35,Top=155,Width=370,Height=28});u.SetBounds(35,184,370,30);u.Text="xem";p.SetBounds(35,224,370,30);p.UseSystemPasswordChar=true;var demo=new Button{Text="Vào bản thử nghiệm",Left=35,Top=268,Width=370,Height=40};demo.Click+=(s,e)=>{string name=u.Text.Trim().ToLowerInvariant();if(new[]{"admin","kho","kythuat","xem"}.Contains(name)&&p.Text=="123123"){User=name;DialogResult=DialogResult.OK;}else MessageBox.Show("Sai tài khoản hoặc mật khẩu thử nghiệm.");};Controls.AddRange(new Control[]{u,p,demo,new Label{Text="Quyền ghi thật do Google và quản trị viên cấp.",Left=35,Top=324,Width=370,Height=30}});AcceptButton=online;}
+ public Login(){Text="MCE Workspace V5.6.3 | Đăng nhập";StartPosition=FormStartPosition.CenterScreen;ClientSize=new Size(440,375);FormBorderStyle=FormBorderStyle.FixedDialog;MaximizeBox=false;Font=new Font("Segoe UI",10);BackColor=Color.White;Controls.Add(new Label{Text="MCE  |  QUẢN LÝ KHO",ForeColor=Color.White,BackColor=Color.FromArgb(23,46,73),Dock=DockStyle.Top,Height=76,TextAlign=ContentAlignment.MiddleCenter,Font=new Font("Segoe UI",17,FontStyle.Bold)});var online=new Button{Text="Đăng nhập Google - dữ liệu thật",Left=35,Top=96,Width=370,Height=44,BackColor=Color.FromArgb(22,117,209),ForeColor=Color.White,FlatStyle=FlatStyle.Flat};online.Click+=(s,e)=>{User="Google";DialogResult=DialogResult.OK;};Controls.Add(online);Controls.Add(new Label{Text="Chế độ DEMO (không truy cập kho thật)",Left=35,Top=155,Width=370,Height=28});u.SetBounds(35,184,370,30);u.Text="xem";p.SetBounds(35,224,370,30);p.UseSystemPasswordChar=true;var demo=new Button{Text="Vào bản thử nghiệm",Left=35,Top=268,Width=370,Height=40};demo.Click+=(s,e)=>{string name=u.Text.Trim().ToLowerInvariant();if(new[]{"admin","kho","kythuat","xem"}.Contains(name)&&p.Text=="123123"){User=name;DialogResult=DialogResult.OK;}else MessageBox.Show("Sai tài khoản hoặc mật khẩu thử nghiệm.");};Controls.AddRange(new Control[]{u,p,demo,new Label{Text="Quyền ghi thật do Google và quản trị viên cấp.",Left=35,Top=324,Width=370,Height=30}});AcceptButton=online;}
 }
 class Google {
  const string Scope="https://www.googleapis.com/auth/spreadsheets.readonly openid email";
@@ -74,7 +74,7 @@ class MainForm:Form {
  workspaceKpi[2].Text=stock.Count(r=>r.Length>=12&&new[]{"CẦN NHẬP","HẾT HÀNG"}.Contains(r[11])).ToString("N0");
  workspaceKpi[3].Text=stock.Count(r=>r.Length>=12&&new[]{"ÂM KHO","TRÙNG MÃ","CẦN ĐỐI SOÁT"}.Contains(r[11])).ToString("N0");
  foreach(var entry in workspaceFilters){entry.Key.Enabled=!history;entry.Key.BackColor=entry.Value==workspaceFilter&&!history?Color.FromArgb(213,230,252):Color.White;}
- if(workspaceAccount!=null)workspaceAccount.Text=(liveAlias==""?"Chỉ đọc":liveAlias+" / "+liveRole)+"    |    V5.6.2";
+ if(workspaceAccount!=null)workspaceAccount.Text=(liveAlias==""?"Chỉ đọc":liveAlias+" / "+liveRole)+"    |    V5.6.3";
  }
 
  class SoftCard:Panel {
@@ -83,16 +83,16 @@ class MainForm:Form {
  }
  Button CleanButton(string text,Action action){var b=Btn(text,action);b.FlatStyle=FlatStyle.Flat;b.FlatAppearance.BorderSize=0;b.FlatAppearance.MouseOverBackColor=Color.FromArgb(229,239,252);b.BackColor=Color.White;b.Font=new Font("Segoe UI",10);b.Cursor=Cursors.Hand;return b;}
  void ModernLayout(){
- Text="MCE WORKSPACE | V5.6.2";BackColor=Color.White;
+ Text="MCE WORKSPACE | V5.6.3";BackColor=Color.White;
  var side=Controls.OfType<FlowLayoutPanel>().First();
  var content=Controls.OfType<TableLayoutPanel>().First();
  var buttons=side.Controls.OfType<Button>().ToArray();
- side.Controls.Clear();side.Width=250;side.Padding=new Padding(10,8,10,8);side.BackColor=Color.FromArgb(249,249,250);
+ side.Controls.Clear();side.Width=190;side.Padding=new Padding(7,8,7,8);side.BackColor=Color.FromArgb(249,249,250);
  string[][] sections={new[]{"QUẢN LÝ KHO","Danh mục và tồn kho","Nhập kho","Xuất kho","Thêm vật tư"},new[]{"GIAO DỊCH","Lịch sử nhập xuất","Sửa giao dịch","Xuất CSV"},new[]{"QUẢN TRỊ","Quản lý tài khoản","Đồng bộ Google","Cấu hình Google","Cấu hình dịch vụ","Cập nhật phiên bản","Đăng xuất"}};
  string[] icons={"▣","↓","↑","+","◷","✎","⇩","♙","↻","⚙","⚙","↻","↪"};int ix=0;
- foreach(var section in sections){side.Controls.Add(new Label{Text=section[0],Width=204,Height=25,Margin=new Padding(3,8,0,0),ForeColor=navy,Font=new Font("Segoe UI",10,FontStyle.Bold)});foreach(var name in section.Skip(1)){var button=buttons.FirstOrDefault(x=>x.Text==name);if(button==null)continue;modernButtons[button]=name;button.Text=icons[ix++%icons.Length]+"   "+(name=="Danh mục và tồn kho"?"Tra cứu vật tư":name);button.Width=204;button.Height=33;button.AutoSize=false;button.Margin=new Padding(0,0,0,2);button.TextAlign=ContentAlignment.MiddleLeft;button.ForeColor=navy;button.FlatStyle=FlatStyle.Flat;button.FlatAppearance.BorderSize=0;button.FlatAppearance.MouseOverBackColor=Color.FromArgb(229,239,252);button.Padding=new Padding(5,0,0,0);button.Font=new Font("Segoe UI",10);button.Cursor=Cursors.Hand;side.Controls.Add(button);}side.Controls.Add(new Panel{Width=204,Height=1,Margin=new Padding(0,8,0,3),BackColor=Color.FromArgb(225,228,232)});}
- content.Controls.Clear();content.RowStyles.Clear();content.ColumnStyles.Clear();content.ColumnCount=1;content.RowCount=8;content.Padding=new Padding(12,8,12,4);content.BackColor=Color.White;
- foreach(int height in new[]{36,124,42,34})content.RowStyles.Add(new RowStyle(SizeType.Absolute,height));content.RowStyles.Add(new RowStyle(SizeType.Percent,100));content.RowStyles.Add(new RowStyle(SizeType.Absolute,126));content.RowStyles.Add(new RowStyle(SizeType.Absolute,64));content.RowStyles.Add(new RowStyle(SizeType.Absolute,24));
+ foreach(var section in sections){side.Controls.Add(new Label{Text=section[0],Width=166,Height=25,Margin=new Padding(3,8,0,0),ForeColor=navy,Font=new Font("Segoe UI",10,FontStyle.Bold)});foreach(var name in section.Skip(1)){var button=buttons.FirstOrDefault(x=>x.Text==name);if(button==null)continue;modernButtons[button]=name;button.Text=icons[ix++%icons.Length]+"   "+(name=="Danh mục và tồn kho"?"Tra cứu vật tư":name);button.Width=166;button.Height=33;button.AutoSize=false;button.Margin=new Padding(0,0,0,2);button.TextAlign=ContentAlignment.MiddleLeft;button.ForeColor=navy;button.FlatStyle=FlatStyle.Flat;button.FlatAppearance.BorderSize=0;button.FlatAppearance.MouseOverBackColor=Color.FromArgb(229,239,252);button.Padding=new Padding(5,0,0,0);button.Font=new Font("Segoe UI",10);button.Cursor=Cursors.Hand;side.Controls.Add(button);}side.Controls.Add(new Panel{Width=166,Height=1,Margin=new Padding(0,8,0,3),BackColor=Color.FromArgb(225,228,232)});}
+ content.Controls.Clear();content.RowStyles.Clear();content.ColumnStyles.Clear();content.ColumnCount=1;content.RowCount=7;content.Padding=new Padding(12,8,12,4);content.BackColor=Color.White;
+ foreach(int height in new[]{36,76,42,34})content.RowStyles.Add(new RowStyle(SizeType.Absolute,height));content.RowStyles.Add(new RowStyle(SizeType.Percent,100));content.RowStyles.Add(new RowStyle(SizeType.Absolute,64));content.RowStyles.Add(new RowStyle(SizeType.Absolute,24));
  var top=new Panel{Dock=DockStyle.Fill,BackColor=Color.FromArgb(23,46,73),Margin=new Padding(0)};
  var brand=new Label{Text="▦   MCE WORKSPACE",Dock=DockStyle.Left,Width=300,ForeColor=Color.White,Font=new Font("Segoe UI",13,FontStyle.Bold),TextAlign=ContentAlignment.MiddleLeft,Padding=new Padding(12,0,0,0)};
  workspaceAccount=new Label{Dock=DockStyle.Right,Width=300,ForeColor=Color.White,TextAlign=ContentAlignment.MiddleRight,Padding=new Padding(0,0,12,0),Font=new Font("Segoe UI",9)};
@@ -100,19 +100,30 @@ class MainForm:Form {
  var body=new Panel{Dock=DockStyle.Fill,Margin=new Padding(0),BackColor=Color.White};Controls.Remove(content);Controls.Remove(side);body.Controls.Add(content);body.Controls.Add(side);
  var shell=new TableLayoutPanel{Dock=DockStyle.Fill,ColumnCount=1,RowCount=2,Margin=new Padding(0),Padding=new Padding(0)};shell.RowStyles.Add(new RowStyle(SizeType.Absolute,44));shell.RowStyles.Add(new RowStyle(SizeType.Percent,100));shell.Controls.Add(top,0,0);shell.Controls.Add(body,0,1);Controls.Add(shell);
  title.Text="Tra cứu vật tư";title.Font=new Font("Segoe UI",14,FontStyle.Bold);title.Dock=DockStyle.Fill;title.TextAlign=ContentAlignment.MiddleLeft;content.Controls.Add(title,0,0);
- var cards=new TableLayoutPanel{Dock=DockStyle.Fill,ColumnCount=2,RowCount=2,Margin=new Padding(0,0,0,3)};cards.ColumnStyles.Add(new ColumnStyle(SizeType.Percent,50));cards.ColumnStyles.Add(new ColumnStyle(SizeType.Percent,50));cards.RowStyles.Add(new RowStyle(SizeType.Percent,50));cards.RowStyles.Add(new RowStyle(SizeType.Percent,50));
+ var cards=new TableLayoutPanel{Dock=DockStyle.Fill,ColumnCount=4,RowCount=1,Margin=new Padding(0,0,0,3)};for(int k=0;k<4;k++)cards.ColumnStyles.Add(new ColumnStyle(SizeType.Percent,25));cards.RowStyles.Add(new RowStyle(SizeType.Percent,100));
  string[] names={"Mã vật tư","Đủ hàng","Cần nhập / hết hàng","Cần đối soát"};Color[] colors={Color.FromArgb(30,105,220),Color.FromArgb(20,145,95),Color.FromArgb(180,112,20),Color.FromArgb(150,65,160)};
- for(int i=0;i<4;i++){var p=new SoftCard{Dock=DockStyle.Fill,Margin=new Padding(0,0,5,5),Padding=new Padding(9,3,6,3)};var v=new Label{Dock=DockStyle.Fill,TextAlign=ContentAlignment.BottomLeft,Font=new Font("Segoe UI",16,FontStyle.Bold),ForeColor=colors[i]};var l=new Label{Text=names[i],Dock=DockStyle.Bottom,Height=20,ForeColor=Color.DimGray,Font=new Font("Segoe UI",9)};workspaceKpi[i]=v;p.Controls.Add(v);p.Controls.Add(l);cards.Controls.Add(p,i%2,i/2);}content.Controls.Add(cards,0,1);
+ for(int i=0;i<4;i++){var p=new SoftCard{Dock=DockStyle.Fill,Margin=new Padding(0,0,5,5),Padding=new Padding(9,3,6,3)};var v=new Label{Dock=DockStyle.Fill,TextAlign=ContentAlignment.BottomLeft,Font=new Font("Segoe UI",16,FontStyle.Bold),ForeColor=colors[i]};var l=new Label{Text=names[i],Dock=DockStyle.Bottom,Height=20,ForeColor=Color.DimGray,Font=new Font("Segoe UI",9)};workspaceKpi[i]=v;p.Controls.Add(v);p.Controls.Add(l);cards.Controls.Add(p,i,0);}content.Controls.Add(cards,0,1);
  var tools=new TableLayoutPanel{Dock=DockStyle.Fill,ColumnCount=4,RowCount=1,Margin=new Padding(0,3,0,3)};tools.RowStyles.Add(new RowStyle(SizeType.Percent,100));tools.ColumnStyles.Add(new ColumnStyle(SizeType.Percent,100));tools.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute,165));tools.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute,38));tools.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute,64));search.Dock=DockStyle.Fill;search.Margin=new Padding(0,4,5,0);search.Font=new Font("Segoe UI",10);group.Dock=DockStyle.Fill;group.Margin=new Padding(0,4,4,0);var searchCard=new SoftCard{Dock=DockStyle.Fill,Margin=new Padding(0,0,4,0),Padding=new Padding(5,3,5,3)};var searchIcon=new Label{Text="⌕",Dock=DockStyle.Left,Width=26,TextAlign=ContentAlignment.MiddleCenter,Font=new Font("Segoe UI",15),ForeColor=navy};search.BorderStyle=BorderStyle.None;search.Dock=DockStyle.Fill;searchCard.Controls.Add(search);searchCard.Controls.Add(searchIcon);tools.Controls.Add(searchCard,0,0);search.HandleCreated+=(sender,e)=>SearchHint();if(search.IsHandleCreated)SearchHint();tools.Controls.Add(group,1,0);var refresh=CleanButton("↻",()=>Sync(true));refresh.Dock=DockStyle.Fill;tools.Controls.Add(refresh,2,0);var clear=CleanButton("Xóa lọc",()=>{workspaceFilter="all";search.Clear();if(group.Items.Count>0)group.SelectedIndex=0;Render();});clear.Dock=DockStyle.Fill;tools.Controls.Add(clear,3,0);content.Controls.Add(tools,0,2);
  var filters=new FlowLayoutPanel{Dock=DockStyle.Fill,WrapContents=false,Margin=new Padding(0)};string[] keys={"all","ok","low","review"};string[] labels={"Tất cả","Đủ hàng","Cần nhập","Cần đối soát"};for(int i=0;i<keys.Length;i++){string key=keys[i];var bt=CleanButton(labels[i],()=>{if(history)return;workspaceFilter=key;Render();});bt.Height=27;bt.Margin=new Padding(0,0,4,0);workspaceFilters[bt]=key;filters.Controls.Add(bt);}content.Controls.Add(filters,0,3);
- grid.Dock=DockStyle.Fill;grid.Margin=new Padding(0);grid.Font=new Font("Segoe UI",10);grid.RowTemplate.Height=39;grid.ColumnHeadersHeight=29;grid.ColumnHeadersDefaultCellStyle.BackColor=Color.White;grid.ColumnHeadersDefaultCellStyle.ForeColor=navy;grid.ColumnHeadersBorderStyle=DataGridViewHeaderBorderStyle.None;grid.CellBorderStyle=DataGridViewCellBorderStyle.SingleHorizontal;grid.GridColor=Color.FromArgb(234,236,240);grid.DefaultCellStyle.BackColor=Color.White;grid.AlternatingRowsDefaultCellStyle.BackColor=Color.White;grid.DefaultCellStyle.SelectionBackColor=Color.FromArgb(225,237,253);grid.DefaultCellStyle.SelectionForeColor=navy;grid.DefaultCellStyle.WrapMode=DataGridViewTriState.True;content.Controls.Add(grid,0,4);
+ grid.Dock=DockStyle.Fill;grid.Margin=new Padding(0);grid.Font=new Font("Segoe UI",10);grid.RowTemplate.Height=39;grid.ColumnHeadersHeight=29;grid.ColumnHeadersDefaultCellStyle.BackColor=Color.White;grid.ColumnHeadersDefaultCellStyle.ForeColor=navy;grid.ColumnHeadersBorderStyle=DataGridViewHeaderBorderStyle.None;grid.CellBorderStyle=DataGridViewCellBorderStyle.SingleHorizontal;grid.GridColor=Color.FromArgb(234,236,240);grid.DefaultCellStyle.BackColor=Color.White;grid.AlternatingRowsDefaultCellStyle.BackColor=Color.White;grid.DefaultCellStyle.SelectionBackColor=Color.FromArgb(225,237,253);grid.DefaultCellStyle.SelectionForeColor=navy;grid.DefaultCellStyle.WrapMode=DataGridViewTriState.True;var mainArea=new TableLayoutPanel{Dock=DockStyle.Fill,ColumnCount=2,RowCount=1,Margin=new Padding(0)};mainArea.ColumnStyles.Add(new ColumnStyle(SizeType.Percent,62));mainArea.ColumnStyles.Add(new ColumnStyle(SizeType.Percent,38));mainArea.RowStyles.Add(new RowStyle(SizeType.Percent,100));mainArea.Controls.Add(grid,0,0);content.Controls.Add(mainArea,0,4);
  workspaceRight=new SoftCard{Dock=DockStyle.Fill,Margin=new Padding(0,5,0,3)};workspaceDetail=new TextBox{Dock=DockStyle.Fill,Multiline=true,ReadOnly=true,ScrollBars=ScrollBars.Vertical,BorderStyle=BorderStyle.None,BackColor=Color.White,Font=new Font("Segoe UI",9)};
- var detailBody=new Panel{Dock=DockStyle.Fill};detailBody.Controls.Add(workspaceDetail);
- var photoSide=new Panel{Dock=DockStyle.Left,Width=96,Padding=new Padding(0,0,7,0)};
- materialPhoto=new PictureBox{Dock=DockStyle.Fill,SizeMode=PictureBoxSizeMode.Zoom,BackColor=Color.FromArgb(249,250,252)};photoLabel=new Label{Dock=DockStyle.Bottom,Height=16,TextAlign=ContentAlignment.MiddleCenter,Font=new Font("Segoe UI",8),Text="Chưa có ảnh"};photoChoose=CleanButton("Chọn / đổi ảnh",()=>ChooseMaterialPhoto());photoChoose.Dock=DockStyle.Bottom;photoChoose.AutoSize=false;photoChoose.Height=24;photoChoose.Font=new Font("Segoe UI",8);photoSide.Controls.Add(materialPhoto);photoSide.Controls.Add(photoLabel);detailBody.Controls.Add(photoSide);var detailActions=new FlowLayoutPanel{Dock=DockStyle.Bottom,Height=30,WrapContents=false,Margin=new Padding(0)};photoChoose.Dock=DockStyle.None;photoChoose.Width=110;photoChoose.Margin=new Padding(0);var findPhoto=CleanButton("Tìm ảnh Google",()=>FindMaterialPhoto());findPhoto.Height=27;findPhoto.Margin=new Padding(4,0,0,0);detailActions.Controls.Add(photoChoose);detailActions.Controls.Add(findPhoto);detailBody.Controls.Add(detailActions);workspaceRight.Controls.Add(detailBody);
- var heading=new Label{Text="▧   Chi tiết / Hình ảnh vật tư",Dock=DockStyle.Top,Height=25,Font=new Font("Segoe UI",10,FontStyle.Bold),ForeColor=navy};workspaceRight.Controls.Add(heading);content.Controls.Add(workspaceRight,0,5);
- var ai=new SoftCard{Dock=DockStyle.Fill,Margin=new Padding(0,3,0,3),Padding=new Padding(9,3,9,3)};var aiTitle=new Label{Text="✧   Trợ lý AI MCE",Dock=DockStyle.Top,Height=24,Font=new Font("Segoe UI",10,FontStyle.Bold),ForeColor=navy};var aiButtons=new FlowLayoutPanel{Dock=DockStyle.Fill,WrapContents=false};var aiOpen=CleanButton("Mở Multi AI",()=>{var r=Selected();string data=r==null||history?"Không có vật tư được chọn":String.Join("\\n",sc.Select((x,i)=>x+": "+(i<r.Length?r[i]:"")));using(var f=new MultiAI(data,()=>tx.Select(x=>(string[])x.Clone()).ToArray(),()=>stock.Select(x=>(string[])x.Clone()).ToArray(),()=>status.Text,IsDemo?"":sheetId))f.ShowDialog(this);});var aiCopy=CleanButton("Mở ChatGPT Plus",()=>WorkspaceChat(false));aiButtons.Controls.Add(aiOpen);aiButtons.Controls.Add(aiCopy);ai.Controls.Add(aiButtons);ai.Controls.Add(aiTitle);content.Controls.Add(ai,0,6);
- status.Font=new Font("Segoe UI",8);status.Dock=DockStyle.Fill;status.ForeColor=Color.DimGray;content.Controls.Add(status,0,7);
+
+ var detailBody=new TableLayoutPanel{Dock=DockStyle.Fill,ColumnCount=1,RowCount=5,Padding=new Padding(3)};
+ detailBody.RowStyles.Add(new RowStyle(SizeType.Absolute,28));
+ detailBody.RowStyles.Add(new RowStyle(SizeType.Percent,66));
+ detailBody.RowStyles.Add(new RowStyle(SizeType.Absolute,23));
+ detailBody.RowStyles.Add(new RowStyle(SizeType.Percent,34));
+ detailBody.RowStyles.Add(new RowStyle(SizeType.Absolute,38));
+ var heading=new Label{Text="CHI TIẾT / HÌNH ẢNH VẬT TƯ",Dock=DockStyle.Fill,Font=new Font("Segoe UI",10,FontStyle.Bold),ForeColor=navy};
+ materialPhoto=new PictureBox{Dock=DockStyle.Fill,SizeMode=PictureBoxSizeMode.Zoom,BackColor=Color.FromArgb(249,250,252),Cursor=Cursors.Hand};
+ materialPhoto.DoubleClick+=(sender,e)=>{if(materialPhoto.Image==null)return;using(var f=new Form{Text="Ảnh vật tư "+photoKey,StartPosition=FormStartPosition.CenterParent,Size=new Size(820,700)})using(var pic=new PictureBox{Dock=DockStyle.Fill,SizeMode=PictureBoxSizeMode.Zoom,Image=new Bitmap(materialPhoto.Image)}){f.Controls.Add(pic);f.ShowDialog(this);pic.Image.Dispose();}};
+ photoLabel=new Label{Dock=DockStyle.Fill,TextAlign=ContentAlignment.MiddleCenter,Font=new Font("Segoe UI",9),Text="Chưa có ảnh",ForeColor=Color.DimGray};
+ photoChoose=CleanButton("Chọn / đổi ảnh",()=>ChooseMaterialPhoto());photoChoose.AutoSize=true;photoChoose.Height=32;
+ var detailActions=new FlowLayoutPanel{Dock=DockStyle.Fill,WrapContents=false,AutoScroll=true};detailActions.Controls.Add(photoChoose);detailActions.Controls.Add(CleanButton("Tìm ảnh",()=>FindMaterialPhoto()));
+ detailBody.Controls.Add(heading,0,0);detailBody.Controls.Add(materialPhoto,0,1);detailBody.Controls.Add(photoLabel,0,2);detailBody.Controls.Add(workspaceDetail,0,3);detailBody.Controls.Add(detailActions,0,4);
+ workspaceDetail.Font=new Font("Segoe UI",10);workspaceRight.Margin=new Padding(8,0,0,0);workspaceRight.Controls.Add(detailBody);mainArea.Controls.Add(workspaceRight,1,0);
+ var ai=new SoftCard{Dock=DockStyle.Fill,Margin=new Padding(0,3,0,3),Padding=new Padding(9,3,9,3)};var aiTitle=new Label{Text="✧   Trợ lý AI MCE",Dock=DockStyle.Top,Height=24,Font=new Font("Segoe UI",10,FontStyle.Bold),ForeColor=navy};var aiButtons=new FlowLayoutPanel{Dock=DockStyle.Fill,WrapContents=false};var aiOpen=CleanButton("Mở Multi AI",()=>{var r=Selected();string data=r==null||history?"Không có vật tư được chọn":String.Join("\\n",sc.Select((x,i)=>x+": "+(i<r.Length?r[i]:"")));using(var f=new MultiAI(data,()=>tx.Select(x=>(string[])x.Clone()).ToArray(),()=>stock.Select(x=>(string[])x.Clone()).ToArray(),()=>status.Text,IsDemo?"":sheetId))f.ShowDialog(this);});var aiCopy=CleanButton("Mở ChatGPT Plus",()=>WorkspaceChat(false));aiButtons.Controls.Add(aiOpen);aiButtons.Controls.Add(aiCopy);ai.Controls.Add(aiButtons);ai.Controls.Add(aiTitle);content.Controls.Add(ai,0,5);
+ status.Font=new Font("Segoe UI",8);status.Dock=DockStyle.Fill;status.ForeColor=Color.DimGray;content.Controls.Add(status,0,6);
  grid.CellFormatting+=(sender,e)=>{if(!history&&e.RowIndex>=0&&e.ColumnIndex==1&&grid.Columns.Count==sc.Length){var row=grid.Rows[e.RowIndex];e.Value=Convert.ToString(row.Cells[0].Value)+Environment.NewLine+Convert.ToString(row.Cells[1].Value);e.FormattingApplied=true;}if(!history&&e.ColumnIndex==11&&e.RowIndex>=0){string v=Convert.ToString(e.Value);e.CellStyle.ForeColor=v=="ĐỦ HÀNG"?Color.FromArgb(20,145,95):new[]{"CẦN NHẬP","HẾT HÀNG"}.Contains(v)?Color.FromArgb(180,112,20):Color.FromArgb(150,65,160);}};grid.SelectionChanged+=(sender,e)=>WorkspaceDetails();grid.CurrentCellChanged+=(sender,e)=>WorkspaceDetails();grid.CellClick+=(sender,e)=>WorkspaceDetails();grid.Sorted+=(sender,e)=>WorkspaceDetails();ModernRefresh();Render();
  }
  void CompactColumns(){
@@ -123,7 +134,7 @@ class MainForm:Form {
  foreach(DataGridViewColumn c in grid.Columns)if(c.Index!=1&&c.Index!=10&&c.Index!=11)c.Visible=false;
  if(grid.Rows.Count>0&&grid.CurrentCell==null)grid.CurrentCell=grid.Rows[0].Cells[1];
  grid.Columns[1].HeaderText="Vật tư";grid.Columns[10].HeaderText="Tồn";grid.Columns[11].HeaderText="Trạng thái";
- grid.Columns[1].AutoSizeMode=DataGridViewAutoSizeColumnMode.Fill;grid.Columns[1].FillWeight=48;grid.Columns[10].AutoSizeMode=DataGridViewAutoSizeColumnMode.Fill;grid.Columns[10].FillWeight=20;grid.Columns[11].AutoSizeMode=DataGridViewAutoSizeColumnMode.Fill;grid.Columns[11].FillWeight=32;
+ grid.Columns[1].AutoSizeMode=DataGridViewAutoSizeColumnMode.Fill;grid.Columns[1].FillWeight=60;grid.Columns[10].AutoSizeMode=DataGridViewAutoSizeColumnMode.Fill;grid.Columns[10].FillWeight=15;grid.Columns[11].AutoSizeMode=DataGridViewAutoSizeColumnMode.Fill;grid.Columns[11].FillWeight=25;
  }
  void WorkspaceChat(bool copy){
  try{
@@ -188,7 +199,7 @@ class MainForm:Form {
 {"MCE-0710","https://sterbrust.com/upload/medialibrary/823/rg8q5k0qwuvm5je0pntseu5kzo2vs3gc.png"}};
  readonly HashSet<string> pendingPhotos=new HashSet<string>();
  async void LoadReferencePhoto(string code){
- string url;if(!referencePhotos.TryGetValue(code,out url)||!pendingPhotos.Add(code))return;
+ string url;if(!referencePhotos.TryGetValue(code,out url)){var peer=PhotoPeers(code).FirstOrDefault(x=>referencePhotos.ContainsKey(x));if(peer==null)return;url=referencePhotos[peer];}if(!pendingPhotos.Add(code))return;
  try{
  string path=PhotoPath(code)+".reference.jpg";
  if(!File.Exists(path)){
@@ -197,8 +208,12 @@ class MainForm:Form {
  Directory.CreateDirectory(Path.GetDirectoryName(path));
  using(var stream=new MemoryStream(data))using(var img=Image.FromStream(stream))using(var bmp=new Bitmap(img)){bmp.Save(path,System.Drawing.Imaging.ImageFormat.Jpeg);}
  }
- if(!IsDisposed&&photoKey==code&&!File.Exists(PhotoPath(code))){using(var stream=File.OpenRead(path))using(var img=Image.FromStream(stream)){var old=materialPhoto.Image;materialPhoto.Image=new Bitmap(img);if(old!=null)old.Dispose();}photoLabel.Text="Ảnh tham khảo";}
+ if(!IsDisposed&&photoKey==code&&!File.Exists(PhotoPath(code))){using(var stream=File.OpenRead(path))using(var img=Image.FromStream(stream)){var old=materialPhoto.Image;materialPhoto.Image=new Bitmap(img);if(old!=null)old.Dispose();}photoLabel.Text=referencePhotos.ContainsKey(code)?"Ảnh tham khảo":"Ảnh chung theo tên (tham khảo)";}
  }catch{if(!IsDisposed&&photoKey==code&&!File.Exists(PhotoPath(code)))photoLabel.Text="Chưa tải được ảnh";}finally{pendingPhotos.Remove(code);}
+ }
+ IEnumerable<string> PhotoPeers(string code){
+ var row=stock.FirstOrDefault(x=>x.Length>=7&&String.Equals(x[0],code,StringComparison.OrdinalIgnoreCase));if(row==null||String.IsNullOrWhiteSpace(row[1]))return Enumerable.Empty<string>();
+ return stock.Where(x=>x.Length>=7&&x[0]!=code&&String.Equals(x[1].Trim(),row[1].Trim(),StringComparison.CurrentCultureIgnoreCase)&&String.Equals(x[4].Trim(),row[4].Trim(),StringComparison.CurrentCultureIgnoreCase)&&(String.IsNullOrWhiteSpace(x[6])||String.IsNullOrWhiteSpace(row[6])||String.Equals(x[6].Trim(),row[6].Trim(),StringComparison.CurrentCultureIgnoreCase))).Select(x=>x[0]).Distinct();
  }
  void RefreshMaterialPhoto(string code){
  if(materialPhoto==null)return;
@@ -208,7 +223,7 @@ class MainForm:Form {
  var old=materialPhoto.Image;materialPhoto.Image=null;if(old!=null)old.Dispose();
  photoLabel.Text=code==""?"Chọn vật tư":"Chưa có ảnh";
  if(code=="")return;
- try{string path=PhotoPath(code);if(File.Exists(path)){using(var stream=File.OpenRead(path))using(var image=Image.FromStream(stream)){materialPhoto.Image=new Bitmap(image);}photoLabel.Text=code;}else LoadReferencePhoto(code);}catch{photoLabel.Text="Không đọc được ảnh";}
+ try{string path=PhotoPath(code);if(File.Exists(path)){using(var stream=File.OpenRead(path))using(var image=Image.FromStream(stream)){materialPhoto.Image=new Bitmap(image);}photoLabel.Text=code;}else {var shared=PhotoPeers(code).FirstOrDefault(x=>File.Exists(PhotoPath(x)));if(shared!=null){using(var stream=File.OpenRead(PhotoPath(shared)))using(var image=Image.FromStream(stream)){materialPhoto.Image=new Bitmap(image);}photoLabel.Text="Ảnh chung tham khảo: "+shared;}else LoadReferencePhoto(code);}}catch{photoLabel.Text="Không đọc được ảnh";}
  }
  void ChooseMaterialPhoto(){
  if(IsDemo||(liveRole!="admin"&&liveRole!="kho")||photoKey=="")return;
@@ -233,7 +248,7 @@ class MainForm:Form {
  void WorkspaceDetails(){
  if(workspaceDetail==null)return;
  var r=Selected();if(r==null||r.Length<(history?13:12)){RefreshMaterialPhoto("");workspaceDetail.Text="Chọn một dòng để xem thông tin.";return;} RefreshMaterialPhoto(history?r[2]:r[0]);
- var labels=history?tc:sc;var lines=history?labels.Select((x,i)=>x+": "+r[i]).ToList():new List<string>{r[0]+"   |   "+r[1],r[2], "Tồn: "+r[10]+" "+r[5]+"   |   "+r[11],"Nhóm: "+r[3]+" / "+r[4],"Hãng: "+r[6]};
+ var labels=history?tc:sc;var lines=history?labels.Select((x,i)=>x+": "+r[i]).ToList():new List<string>{r[0]+"   |   "+r[1], "Thông số: "+r[2], "Tồn: "+r[10]+" "+r[5]+"   |   "+r[11],"Nhóm: "+r[3]+" / "+r[4],"Hãng: "+r[6]};
  
  workspaceDetail.Text=String.Join(Environment.NewLine,lines);
  }
@@ -338,7 +353,7 @@ class MultiAI : Form {
  string settings=Path.Combine(App.Home,"ai-settings.bin");
  readonly Func<string[][]> transactions, inventory; readonly Func<string> snapshotStatus; readonly string sourceId; string[] resultHeaders; Panel configPanel; Label sourceLabel;
  public MultiAI(string data,Func<string[][]> rows,Func<string[][]> items,Func<string> state,string id){transactions=rows;inventory=items;snapshotStatus=state;sourceId=id;
- context=data; Text="MCE V5.6.2 | Multi AI Assistant"; StartPosition=FormStartPosition.CenterParent; Size=new Size(880,680); MinimumSize=new Size(650,550); Font=new Font("Segoe UI",10);
+ context=data; Text="MCE V5.6.3 | Multi AI Assistant"; StartPosition=FormStartPosition.CenterParent; Size=new Size(880,680); MinimumSize=new Size(650,550); Font=new Font("Segoe UI",10);
 
  BackColor=Color.FromArgb(16,24,39);ForeColor=Color.White;Size=new Size(1000,750);MinimumSize=new Size(790,630);
  var layout=new TableLayoutPanel{Dock=DockStyle.Fill,ColumnCount=1,RowCount=7,Padding=new Padding(16),BackColor=BackColor};
