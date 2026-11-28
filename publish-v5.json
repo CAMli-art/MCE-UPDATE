@@ -1,5 +1,5 @@
 {
-  "version": "5.6.3",
+  "version": "5.6.4",
   "source_mode": "files",
-  "notes": "Compact navigation, side-by-side inventory and enlarged image/detail panel, shared reference photos by name and compatible brand/group."
+  "notes": "Photo decoding and JPEG saving fixes, size limits, bounded downloads, photo self-test."
 }
