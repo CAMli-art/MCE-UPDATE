@@ -1,5 +1,5 @@
 {
-  "version": "5.6.0",
+  "version": "5.6.1",
   "source_mode": "files",
-  "notes": "Multi AI assistant: Gemini, Groq, Ollama; DPAPI settings; read-only selected material context."
+  "notes": "Local project transaction lookup and CSV export, no AI dependency."
 }
