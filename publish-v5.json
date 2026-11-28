@@ -1,5 +1,5 @@
 {
-  "version": "5.6.4",
+  "version": "5.6.5",
   "source_mode": "files",
-  "notes": "Photo decoding and JPEG saving fixes, size limits, bounded downloads, photo self-test."
+  "notes": "Inline history editing with role and 48-hour checks, server confirmation, original row comparison; retain image fixes."
 }
